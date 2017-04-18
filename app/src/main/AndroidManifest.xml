@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.uninorte.proyecto1">
+
+    <application
+        android:name="com.orm.SugarApp"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="NoteRubric"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".Welcome"
+            android:theme="@style/AppTheme.NoActionBar">
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Home"
+            android:theme="@style/AppTheme.NoActionBar" />
+        />
+        <activity
+            android:name=".Actividad_Materias"
+            android:label=""
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Actividad_Rubricas"
+            android:label=""
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Actividad_Reportes"
+            android:label=""
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Agregar"
+            android:label=""
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Actividad_Estudiantes"
+            android:label=""
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Actividad_Evaluaciones"
+            android:label=""
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Actividad_Niveles"
+            android:label=""
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <meta-data
+            android:name="DATABASE"
+            android:value="DATABASE.db" />
+        <meta-data
+            android:name="VERSION"
+            android:value="1.1" />
+        <meta-data
+            android:name="QUERY_LOG"
+            android:value="true" />
+        <meta-data
+            android:name="DOMAIN_PACKAGE_NAME"
+            android:value="com.uninorte.proyecto1" />
+
+        <activity
+            android:name=".Actividad_Categorias"
+            android:label=""
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Actividad_Elementos"
+            android:label=""
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Actividad_AddDescriptions"
+            android:label="@string/title_activity_actividad__add_descriptions"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+    </application>
+
+</manifest> <!-- android:theme="@android:style/Theme.Holo.Light.Dialog" -->
