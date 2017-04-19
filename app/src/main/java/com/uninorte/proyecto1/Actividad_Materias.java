@@ -207,9 +207,7 @@ public class Actividad_Materias extends AppCompatActivity {
         i.putExtra("title","Materia");
 
         modifyPos = position;
-
         startActivity(i);
-
 
     }
     public void onClick_View(View view){
