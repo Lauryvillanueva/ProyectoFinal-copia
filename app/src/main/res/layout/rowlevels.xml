@@ -32,7 +32,7 @@
             android:ems="10"
             android:visibility="gone"
             android:inputType="numberDecimal"
-            android:hint="Name" />
+            android:hint="Nota Estudiante" />
 
     </LinearLayout>
 

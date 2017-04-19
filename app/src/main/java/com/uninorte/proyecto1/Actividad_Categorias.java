@@ -28,6 +28,7 @@ public class Actividad_Categorias extends AppCompatActivity {
     private Rubrica rubricaCat;
     private String RubName;
     private TextView title;
+    private Boolean selector;
     long initialCount;
     int modifyPos = -1;
 
@@ -45,6 +46,7 @@ public class Actividad_Categorias extends AppCompatActivity {
         title.setText("Categorias");
 
         layoutRoot=(CoordinatorLayout) findViewById(R.id.root);
+        selector=getIntent().getBooleanExtra("OpcionCreEva",false);
 
         RubName=getIntent().getStringExtra("Rub_name");
 
@@ -61,7 +63,7 @@ public class Actividad_Categorias extends AppCompatActivity {
             //estudiantesList = Estudiante.find(Estudiante.class,"materia=?",new String[]{materiaEstud.getId().toString()});
             categoriasList = rubricaCat.getCategorias();
 
-            customAdapterCat = new CustomAdapterCat(this,categoriasList);
+            customAdapterCat = new CustomAdapterCat(this,categoriasList,selector);
             list.setAdapter(customAdapterCat);
             list.setLayoutManager(new LinearLayoutManager(this));
 
@@ -74,6 +76,11 @@ public class Actividad_Categorias extends AppCompatActivity {
                         Log.d("Categorias", "click");
                         Intent i= new Intent(Actividad_Categorias.this,Actividad_Elementos.class);
                         i.putExtra("Cat_name", categoriasList.get(position).getName());
+                        if (selector){
+                            i.putExtra("OpcionCreEva",selector);
+                        }else{
+                            i.putExtra("OpcionCreEva",!selector);
+                        }
                         startActivity(i);
                     }
                 });

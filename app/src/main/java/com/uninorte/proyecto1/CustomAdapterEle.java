@@ -17,12 +17,14 @@ import java.util.List;
 public class CustomAdapterEle extends  RecyclerView.Adapter<CustomAdapterEle.ViewHolder>{
     private List<Elemento> elementoLists;
     private Context context;
+    private Boolean selector;
 
     OnItemClickListener clickListener;
 
-    public CustomAdapterEle(Context context,List<Elemento> elementoLists) {
+    public CustomAdapterEle(Context context,List<Elemento> elementoLists, Boolean selector) {
         this.elementoLists = elementoLists;
         this.context = context;
+        this.selector=selector;
     }
 
 
@@ -48,13 +50,19 @@ public class CustomAdapterEle extends  RecyclerView.Adapter<CustomAdapterEle.Vie
         Elemento elementoList = elementoLists.get(position);
         ViewHolder mViewHolderEle = viewHolder;
         mViewHolderEle.tvEleName.setText(elementoList.getName());
-        mViewHolderEle.buttonedit.setFocusable(false);
-        mViewHolderEle.buttonedit.setFocusableInTouchMode(false);
-        mViewHolderEle.buttonedit.setTag(position);
-        mViewHolderEle.buttonview.setFocusable(false);
-        mViewHolderEle.buttonview.setFocusableInTouchMode(false);
-        mViewHolderEle.buttonview.setTag(position);
-        mViewHolderEle.buttonnote.setVisibility(View.INVISIBLE);
+        if (selector) {
+            mViewHolderEle.buttonedit.setFocusable(false);
+            mViewHolderEle.buttonedit.setFocusableInTouchMode(false);
+            mViewHolderEle.buttonedit.setTag(position);
+            mViewHolderEle.buttonview.setFocusable(false);
+            mViewHolderEle.buttonview.setFocusableInTouchMode(false);
+            mViewHolderEle.buttonview.setTag(position);
+            mViewHolderEle.buttonnote.setVisibility(View.INVISIBLE);
+        }else{
+            mViewHolderEle.buttonnote.setFocusable(false);
+            mViewHolderEle.buttonnote.setFocusableInTouchMode(false);
+            mViewHolderEle.buttonnote.setTag(position);
+        }
 
 
     }

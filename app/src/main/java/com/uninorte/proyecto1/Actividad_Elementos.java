@@ -28,6 +28,7 @@ public class Actividad_Elementos extends AppCompatActivity {
     private Categoria categoriaEle;
     private String CatName;
     private TextView title;
+    private Boolean selector;
     long initialCount;
     int modifyPos = -1;
 
@@ -45,6 +46,7 @@ public class Actividad_Elementos extends AppCompatActivity {
         title.setText("Elementos");
 
         layoutRoot=(CoordinatorLayout) findViewById(R.id.root);
+        selector=getIntent().getBooleanExtra("OpcionCreEva",false);
 
         CatName=getIntent().getStringExtra("Cat_name");
 
@@ -61,7 +63,7 @@ public class Actividad_Elementos extends AppCompatActivity {
             //estudiantesList = Estudiante.find(Estudiante.class,"materia=?",new String[]{materiaEstud.getId().toString()});
             elementosList = categoriaEle.getElementos();
 
-            customAdapterEle = new CustomAdapterEle(this,elementosList);
+            customAdapterEle = new CustomAdapterEle(this,elementosList,selector);
             list.setAdapter(customAdapterEle);
             list.setLayoutManager(new LinearLayoutManager(this));
 
@@ -226,6 +228,13 @@ public class Actividad_Elementos extends AppCompatActivity {
         startActivity(i);
     }
     public void onClick_Note(View view){
+        int position = (int) view.getTag();
+        Intent i = new Intent(Actividad_Elementos.this,Agregar.class);
+        i.putExtra("isEditing", true);
+        i.putExtra("Cat_name",CatName);
+        i.putExtra("Ele_name",elementosList.get(position).getName());
+        i.putExtra("CatEle_peso",elementosList.get(position).getPeso());
+        i.putExtra("title","Elemento");
 
     }
     private void action(String resid) {

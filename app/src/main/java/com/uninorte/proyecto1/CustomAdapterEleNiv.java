@@ -56,22 +56,25 @@ public class CustomAdapterEleNiv extends  RecyclerView.Adapter<CustomAdapterEleN
         ViewHolder mViewHolderEleNiv = viewHolder;
         mViewHolderEleNiv.tvNivName.setText(nivelList.getName());
         Long count;
-        if(selector) {
-            count= EleNivDescription.count(EleNivDescription.class);
-            if (count>0) {
-                Elemento elemento = Elemento.findById(Elemento.class,elementoid);
-                List<EleNivDescription> elenivdescriptions= elemento.getDescriptions();
-                Log.d("onBindViewHolder: ", "Count: "+elenivdescriptions.size());
-                if (!elenivdescriptions.isEmpty()) {
-                    if(position<elenivdescriptions.size()) {
-                        EleNivDescription elenivdescription = elenivdescriptions.get(position);
-                        mViewHolderEleNiv.Edesc.setText(elenivdescription.getDescription());
-                    }
+        count= EleNivDescription.count(EleNivDescription.class);
+        if (count>0) {
+            Elemento elemento = Elemento.findById(Elemento.class,elementoid);
+            List<EleNivDescription> elenivdescriptions= elemento.getDescriptions();
+            Log.d("onBindViewHolder: ", "Count: "+elenivdescriptions.size());
+            if (!elenivdescriptions.isEmpty()) {
+                if(position<elenivdescriptions.size()) {
+                    EleNivDescription elenivdescription = elenivdescriptions.get(position);
+                    mViewHolderEleNiv.Edesc.setText(elenivdescription.getDescription());
                 }
             }
+        }
+        if(selector) {
             mViewHolderEleNiv.Edesc.setVisibility(View.VISIBLE);
             mViewHolderEleNiv.Edesc.setTag(position);
         }else{
+            mViewHolderEleNiv.Edesc.setVisibility(View.VISIBLE);
+            mViewHolderEleNiv.Edesc.setFocusable(false);
+            mViewHolderEleNiv.Edesc.setFocusableInTouchMode(false);
             mViewHolderEleNiv.Epeso.setVisibility(View.VISIBLE);
             mViewHolderEleNiv.Epeso.setTag(position);
         }

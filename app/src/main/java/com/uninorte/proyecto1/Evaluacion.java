@@ -13,10 +13,10 @@ public class Evaluacion extends SugarRecord {
     private Long materia;
     private Long rubrica;
 
-    public Evaluacion(String name, Materia materia, Rubrica rubrica) {
+    public Evaluacion(String name, Materia materia, Long rubrica) {
         this.name = name;
         this.materia = materia.getId();
-        this.rubrica = rubrica.getId();
+        this.rubrica = rubrica;
     }
 
     public Evaluacion() {
@@ -26,8 +26,8 @@ public class Evaluacion extends SugarRecord {
         return rubrica;
     }
 
-    public void setRubrica(Rubrica rubrica) {
-        this.rubrica = rubrica.getId();
+    public void setRubrica(Long rubrica) {
+        this.rubrica = rubrica;
     }
 
     public String getName() {

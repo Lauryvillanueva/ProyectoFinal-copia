@@ -25,6 +25,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,8 +89,9 @@ public class Agregar extends AppCompatActivity {
 
                 }
             });
-
-
+        }else{
+            String[] valor = {"Empty"};
+            selectRub.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, valor));
         }
 
         title=(TextView) findViewById(R.id.title);
@@ -254,7 +256,17 @@ public class Agregar extends AppCompatActivity {
                                             EditorCreatorEle(newName, newPeso);
                                             finish();
                                         }
+
+                                    }else{
+                                        int newRubricaPos = selectRub.getSelectedItemPosition();
+                                        if(Rubrica.count(Rubrica.class)==0){
+                                            Toast.makeText(this,"Crear Rubricas",Toast.LENGTH_SHORT).show();
+                                        }else{
+                                            EditorCreatorEva(newName, newRubricaPos);
+                                            finish();
+                                        }
                                     }
+
                                 }
 
                             }
@@ -368,6 +380,26 @@ public class Agregar extends AppCompatActivity {
         }
     }
 
+    public void EditorCreatorEva(String Name,int Rubricaid){
+        if (!editing) {
+            Log.d("Evaluacion", "saving");
+            Evaluacion evaluacion = new Evaluacion(Name,materiaestud, (long) Rubricaid);
+            evaluacion.save();
+        } else {
+            Log.d("Evaluacion", "updating");
+
+            List<Evaluacion> evaluaciones = Evaluacion.find(Evaluacion.class, "name = ? and materia =?", name,materiaestud.getId().toString());
+            if (evaluaciones.size() > 0) {
+
+                Evaluacion evaluacion = evaluaciones.get(0);
+                Log.d("got evaluacion", "evaluacion: " + evaluacion.getName());
+                evaluacion.setName("" + Name);
+                evaluacion.setRubrica((long) Rubricaid);
+                evaluacion.save();
+            }
+        }
+    }
+
     public void EditorCreatorEstud(String Name,int State){
         if (!editing) {
             Log.d("Estudiante", "saving");
@@ -412,6 +444,7 @@ public class Agregar extends AppCompatActivity {
                 Rubrica rubrica = rubricas.get(0);
                 Intent i = new Intent(Agregar.this,Actividad_Categorias.class);
                 i.putExtra("Rub_name",rubrica.getName());
+                i.putExtra("OpcionCreEva",true);
                 startActivity(i);
             }
         }
@@ -430,5 +463,12 @@ public class Agregar extends AppCompatActivity {
                 startActivity(i);
             }
         }
+    }
+
+    public void onClick_Evaluar(View view) {
+        Intent i = new Intent(Agregar.this,Actividad_Categorias.class);
+        i.putExtra("OpcionCreEva", false);
+        startActivity(i);
+
     }
 }

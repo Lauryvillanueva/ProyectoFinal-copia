@@ -17,12 +17,14 @@ import java.util.List;
 public class CustomAdapterCat extends  RecyclerView.Adapter<CustomAdapterCat.ViewHolder>{
     private List<Categoria> categoriaLists;
     private Context context;
+    private Boolean selector;
 
     OnItemClickListener clickListener;
 
-    public CustomAdapterCat(Context context,List<Categoria> categoriaLists) {
+    public CustomAdapterCat(Context context,List<Categoria> categoriaLists, Boolean selector) {
         this.categoriaLists = categoriaLists;
         this.context = context;
+        this.selector=selector;
     }
 
 
@@ -48,13 +50,20 @@ public class CustomAdapterCat extends  RecyclerView.Adapter<CustomAdapterCat.Vie
         Categoria categoriaList = categoriaLists.get(position);
         ViewHolder mViewHolderCat = viewHolder;
         mViewHolderCat.tvCatName.setText(categoriaList.getName());
-        mViewHolderCat.buttonedit.setFocusable(false);
-        mViewHolderCat.buttonedit.setFocusableInTouchMode(false);
-        mViewHolderCat.buttonedit.setTag(position);
-        mViewHolderCat.buttonview.setFocusable(false);
-        mViewHolderCat.buttonview.setFocusableInTouchMode(false);
-        mViewHolderCat.buttonview.setTag(position);
-        mViewHolderCat.buttonnote.setVisibility(View.INVISIBLE);
+        if (selector) {
+            mViewHolderCat.buttonedit.setFocusable(false);
+            mViewHolderCat.buttonedit.setFocusableInTouchMode(false);
+            mViewHolderCat.buttonedit.setTag(position);
+            mViewHolderCat.buttonview.setFocusable(false);
+            mViewHolderCat.buttonview.setFocusableInTouchMode(false);
+            mViewHolderCat.buttonview.setTag(position);
+            mViewHolderCat.buttonnote.setVisibility(View.INVISIBLE);
+        }else{
+            mViewHolderCat.buttonedit.setVisibility(View.INVISIBLE);
+            mViewHolderCat.buttonview.setVisibility(View.INVISIBLE);
+            mViewHolderCat.buttonnote.setVisibility(View.INVISIBLE);
+
+        }
 
 
     }
