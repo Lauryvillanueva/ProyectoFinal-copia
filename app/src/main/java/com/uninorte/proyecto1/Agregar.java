@@ -36,22 +36,11 @@ public class Agregar extends AppCompatActivity {
     private Spinner stateEstud;
     boolean editing, viewing;
     private String name;
-    private Button eNivel,eCateg;
+    private Button eNivel,eCateg,eDesc;
 
     private Materia materiaestud;
     private Rubrica rubricaSel;
     private Categoria categoriaEle;
-
-    private RecyclerView list;
-    private View layout;
-    private List<Nivel> nivelesList = new ArrayList<>();
-    private CustomAdapterEleNiv customAdapterEleNiv;
-    long initialCount;
-    int modifyPos = -1;
-    private Long nivelId,elementoId;
-    private EditText description;
-
-    boolean niveladd;
 
     CoordinatorLayout layoutRoot;
 
@@ -64,6 +53,7 @@ public class Agregar extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         layoutRoot=(CoordinatorLayout) findViewById(R.id.root);
+        eDesc=(Button) findViewById(R.id.addDescriptions);
 
         pesocat=(TextView) findViewById(R.id.textViewPesoCat);
         Epeso=(EditText) findViewById(R.id.editTextPeso);
@@ -99,7 +89,10 @@ public class Agregar extends AppCompatActivity {
                 MainInputData("Estud_name");
             }else{
                 if (title.getText().toString().equals("Agregar Rubrica")) {
-
+                    if(editing || viewing) {
+                        eNivel.setVisibility(View.VISIBLE);
+                        eCateg.setVisibility(View.VISIBLE);
+                    }
                     MainInputData("Rub_name");
                 }else{
                     if (title.getText().toString().equals("Agregar Nivel") ) {
@@ -113,11 +106,10 @@ public class Agregar extends AppCompatActivity {
                             MainInputData("NivelCat_name");
                         }else{
                             if (title.getText().toString().equals("Agregar Elemento")){
-                                if (savedInstanceState != null)
-                                    modifyPos = savedInstanceState.getInt("modify");
+                                if(editing || viewing)
+                                    eDesc.setVisibility(View.VISIBLE);
                                 pesocat.setVisibility(View.VISIBLE);
                                 Epeso.setVisibility(View.VISIBLE);
-
                                 categoriaEle=Categoria.find(Categoria.class,"name =  ?", getIntent().getStringExtra("Cat_name")).get(0);
                                 MainInputData("Ele_name");
 
@@ -140,33 +132,6 @@ public class Agregar extends AppCompatActivity {
         });
 
     }
-    public void RecylcleviewEle(boolean selector){
-        initialCount = Nivel.count(Nivel.class);
-        Log.d("create", "onCreate initialcountCat: "+initialCount);
-        list = (RecyclerView)findViewById(R.id.ReciclerView);
-        layout = findViewById(R.id.include);
-        layout.setVisibility(View.VISIBLE);
-
-
-        if(initialCount>=0){
-            List<Elemento> elementos = Elemento.find(Elemento.class, "name = ? and categoria =?", name,categoriaEle.getId().toString());
-            if (elementos.size() > 0) {
-                Elemento elemento = elementos.get(0);
-                Categoria categoria = Categoria.findById(Categoria.class, elemento.getCategoria());
-                Rubrica rubrica = Rubrica.findById(Rubrica.class, categoria.getRubrica());
-
-
-                nivelesList = rubrica.getNiveles();
-
-                customAdapterEleNiv = new CustomAdapterEleNiv(this, nivelesList, selector, elemento.getId());
-                list.setAdapter(customAdapterEleNiv);
-                list.setLayoutManager(new LinearLayoutManager(this));
-
-                if (nivelesList.isEmpty())
-                    Snackbar.make(layoutRoot, "No hay Niveles en la Rubrica.", Snackbar.LENGTH_LONG).show();
-            }
-        }
-    }
 
     public void MainInputData(String extra){
 
@@ -180,10 +145,6 @@ public class Agregar extends AppCompatActivity {
             if(getIntent().getStringExtra("title").equals("Categoria") || getIntent().getStringExtra("title").equals("Elemento")){
                 int pesocatele = getIntent().getIntExtra("CatEle_peso",0);
                 Epeso.setText(String.valueOf(pesocatele));
-            }
-            if (getIntent().getStringExtra("title").equals("Elemento")){
-                RecylcleviewEle(true);
-
             }
         }
         if (viewing){
@@ -202,9 +163,6 @@ public class Agregar extends AppCompatActivity {
                 Epeso.setText(String.valueOf(pesocatele));
                 Epeso.setFocusable(false);
                 Epeso.setFocusableInTouchMode(false);
-            }
-            if (getIntent().getStringExtra("title").equals("Elemento")){
-                RecylcleviewEle(true);
             }
         }
     }
@@ -231,8 +189,6 @@ public class Agregar extends AppCompatActivity {
                         finish();
                     }else{
                         if (title.getText().toString().equals("Agregar Rubrica")) {
-                            eNivel.setVisibility(View.VISIBLE);
-                            eCateg.setVisibility(View.VISIBLE);
                             EditorCreatorRub(newName);
                             finish();
                         }else{
@@ -255,7 +211,6 @@ public class Agregar extends AppCompatActivity {
                                         }else {
                                             int newPeso = Integer.parseInt(Epeso.getText().toString());
                                             EditorCreatorEle(newName, newPeso);
-                                            IterateRecycleview();
                                             finish();
                                         }
                                     }
@@ -272,56 +227,7 @@ public class Agregar extends AppCompatActivity {
 
     }
 
-    public void IterateRecycleview(){
-        if(editing) {
-            //nivelId,elementoId;
-            //description;
-            boolean selector;
-            long count;
-            count=EleNivDescription.count(EleNivDescription.class);
 
-
-            for (int i = 0; i < customAdapterEleNiv.getItemCount(); i++){
-                nivelId=Long.valueOf(String.valueOf(i));
-                List<Elemento> elementos = Elemento.find(Elemento.class, "name = ? and categoria =?", name,categoriaEle.getId().toString());
-                if (elementos.size() > 0) {
-                    elementoId=elementos.get(0).getId();
-                }
-                description=(EditText) list.findViewHolderForLayoutPosition(i).itemView.findViewById(R.id.editTextNivel);
-
-                if(count>0){
-                    EleNivDescription elenivdescription= EleNivDescription.find(EleNivDescription.class,"elemento = ? and nivel = ?",String.valueOf(elementoId),String.valueOf(nivelId)).get(0);
-                    if(elenivdescription==null){
-                        selector=false;
-                    }else{
-                        selector=true;
-                    }
-                }else{
-                    selector=false;
-                }
-                EditorCreatorEleNiv(nivelId,elementoId,description.getText().toString(),selector);
-
-            }
-        }
-    }
-
-    public void EditorCreatorEleNiv(Long Nivel,Long Elemento, String description,boolean credit){
-        if (!credit){
-            Log.d("EleNivDescription", "saving");
-            EleNivDescription elenivdescription = new EleNivDescription(Elemento,Nivel,description);
-            elenivdescription.save();
-        }else{
-            Log.d("EleNivDescription", "updating");
-            List<EleNivDescription>  eleNivDescriptions = EleNivDescription.find(EleNivDescription.class,"elemento = ? and nivel = ?",String.valueOf(elementoId),String.valueOf(nivelId));
-            if(eleNivDescriptions.size()>0){
-                EleNivDescription eleNivDescription= eleNivDescriptions.get(0);
-                eleNivDescription.setElemento(Elemento);
-                eleNivDescription.setNivel(Nivel);
-                eleNivDescription.setDescription(description);
-                eleNivDescription.save();
-            }
-        }
-    }
 
     public void EditorCreatorMat(String Name){
         if (!editing) {
@@ -363,13 +269,11 @@ public class Agregar extends AppCompatActivity {
 
     public void EditorCreatorNivel(String Name){
         if (!editing) {
-            niveladd=true;
             Log.d("Nivel", "saving");
             Nivel nivel = new Nivel("" + Name,rubricaSel);
             nivel.save();
 
         } else {
-            niveladd=false;
             Log.d("Nivel", "updating");
 
             List<Nivel> niveles = Nivel.find(Nivel.class, "name = ? and rubrica =?", name,rubricaSel.getId().toString());
@@ -467,6 +371,21 @@ public class Agregar extends AppCompatActivity {
                 Rubrica rubrica = rubricas.get(0);
                 Intent i = new Intent(Agregar.this,Actividad_Categorias.class);
                 i.putExtra("Rub_name",rubrica.getName());
+                startActivity(i);
+            }
+        }
+    }
+
+    public void onClick_addDescriptions(View view) {
+        if(!editing && !viewing){
+            Snackbar.make(layoutRoot, "Guardar Elemento Primero.", Snackbar.LENGTH_LONG).show();
+        }else {
+            List<Elemento> elementos = Elemento.find(Elemento.class, "name = ? and categoria =?", name,categoriaEle.getId().toString());
+            if (elementos.size() > 0) {
+                Elemento elemento = elementos.get(0);
+
+                Intent i = new Intent(Agregar.this, Actividad_AddDescriptions.class);
+                i.putExtra("Ele_id", elemento.getId());
                 startActivity(i);
             }
         }

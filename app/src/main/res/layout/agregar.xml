@@ -168,7 +168,7 @@
             android:layout_gravity="right"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
-            android:onClick="onClick_EditCategorias"
+            android:onClick="onClick_addDescriptions"
             android:text="Añadir Descripciones"
             android:theme="@style/AppTheme.ButtonBlue"
             android:visibility="gone"

@@ -33,5 +33,5 @@
         app:backgroundTint="@color/colorPrimary"
         app:layout_anchor="@+id/include"
         app:layout_anchorGravity="bottom|right|end"
-        app:srcCompat="@drawable/add" />
+        app:srcCompat="@drawable/save" />
 </android.support.design.widget.CoordinatorLayout>

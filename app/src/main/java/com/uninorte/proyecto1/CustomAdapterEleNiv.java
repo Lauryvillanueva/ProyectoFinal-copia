@@ -59,15 +59,14 @@ public class CustomAdapterEleNiv extends  RecyclerView.Adapter<CustomAdapterEleN
         if(selector) {
             count= EleNivDescription.count(EleNivDescription.class);
             if (count>0) {
-                Log.d("onBindViewHolder: ", "Count: "+count);
-                Log.d("onBindViewHolder: ", "Elementoid: "+elementoid);
-                Log.d("onBindViewHolder: ", "Nivelid: "+nivelList.getId());
                 Elemento elemento = Elemento.findById(Elemento.class,elementoid);
-
                 List<EleNivDescription> elenivdescriptions= elemento.getDescriptions();
+                Log.d("onBindViewHolder: ", "Count: "+elenivdescriptions.size());
                 if (!elenivdescriptions.isEmpty()) {
-                    EleNivDescription elenivdescription=elenivdescriptions.get(position);
-                    mViewHolderEleNiv.Edesc.setText(elenivdescription.getDescription());
+                    if(position<elenivdescriptions.size()) {
+                        EleNivDescription elenivdescription = elenivdescriptions.get(position);
+                        mViewHolderEleNiv.Edesc.setText(elenivdescription.getDescription());
+                    }
                 }
             }
             mViewHolderEleNiv.Edesc.setVisibility(View.VISIBLE);
