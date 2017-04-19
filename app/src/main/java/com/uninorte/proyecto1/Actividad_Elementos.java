@@ -81,6 +81,9 @@ public class Actividad_Elementos extends AppCompatActivity {
         }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        if (!selector){
+            fab.setVisibility(View.GONE);
+        }
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -229,10 +232,10 @@ public class Actividad_Elementos extends AppCompatActivity {
     }
     public void onClick_Note(View view){
         int position = (int) view.getTag();
-        Intent i = new Intent(Actividad_Elementos.this,Agregar.class);
+        Intent i = new Intent(Actividad_Elementos.this,Actividad_AddDescriptions.class);
         i.putExtra("isEditing", true);
         i.putExtra("Cat_name",CatName);
-        i.putExtra("Ele_name",elementosList.get(position).getName());
+        i.putExtra("Ele_id",elementosList.get(position).getId());
         i.putExtra("CatEle_peso",elementosList.get(position).getPeso());
         i.putExtra("title","Elemento");
 

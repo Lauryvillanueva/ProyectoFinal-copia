@@ -77,9 +77,9 @@ public class Actividad_Categorias extends AppCompatActivity {
                         Intent i= new Intent(Actividad_Categorias.this,Actividad_Elementos.class);
                         i.putExtra("Cat_name", categoriasList.get(position).getName());
                         if (selector){
-                            i.putExtra("OpcionCreEva",selector);
+                            i.putExtra("OpcionCreEva",true);
                         }else{
-                            i.putExtra("OpcionCreEva",!selector);
+                            i.putExtra("OpcionCreEva",false);
                         }
                         startActivity(i);
                     }
@@ -89,6 +89,9 @@ public class Actividad_Categorias extends AppCompatActivity {
         }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        if (!selector){
+            fab.setVisibility(View.GONE);
+        }
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

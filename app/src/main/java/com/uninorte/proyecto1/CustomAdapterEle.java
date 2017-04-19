@@ -62,6 +62,8 @@ public class CustomAdapterEle extends  RecyclerView.Adapter<CustomAdapterEle.Vie
             mViewHolderEle.buttonnote.setFocusable(false);
             mViewHolderEle.buttonnote.setFocusableInTouchMode(false);
             mViewHolderEle.buttonnote.setTag(position);
+            mViewHolderEle.buttonedit.setVisibility(View.INVISIBLE);
+            mViewHolderEle.buttonview.setVisibility(View.INVISIBLE);
         }
 
 

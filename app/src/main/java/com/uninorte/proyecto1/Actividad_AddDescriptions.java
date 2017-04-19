@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -28,8 +29,11 @@ public class Actividad_AddDescriptions extends AppCompatActivity {
     int modifyPos = -1;
     private Long nivelId;
     private EditText description;
+    private EditText nota;
+    private TextView title;
     private Long Eleid;
     private Rubrica rubrica;
+    private Boolean mode;
 
     CoordinatorLayout layoutRoot;
 
@@ -41,6 +45,14 @@ public class Actividad_AddDescriptions extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         layoutRoot=(CoordinatorLayout) findViewById(R.id.root);
+        title=(TextView)findViewById(R.id.toolbar_title);
+        mode=getIntent().getBooleanExtra("selector",true);
+
+        if(mode){
+            title.setText("Añadir Descripcion");
+        }else{
+            title.setText("Añadir Nota");
+        }
 
         initialCount = Nivel.count(Nivel.class);
         Log.d("create", "onCreate initialcountCat: "+initialCount);
@@ -83,7 +95,7 @@ public class Actividad_AddDescriptions extends AppCompatActivity {
                 for (int i = 0; i < customAdapterEleNiv.getItemCount(); i++){
                     nivelId=Long.valueOf(String.valueOf(i));
                     description=(EditText) list.findViewHolderForLayoutPosition(i).itemView.findViewById(R.id.editTextNivel);
-
+                    nota=(EditText) list.findViewHolderForLayoutPosition(i).itemView.findViewById(R.id.editTextPeso);
                     if(elenivdescriptions.isEmpty()){
                         selector=false;
                     }else{
@@ -95,8 +107,12 @@ public class Actividad_AddDescriptions extends AppCompatActivity {
                         }
 
                     }
+                    if(mode) {
+                        EditorCreatorEleNiv(Eleid, nivelId, description.getText().toString(), selector);
+                    }else{
+                        EditorCreatorEvalEleNiv(Eleid, nivelId,Integer.parseInt(nota.getText().toString()), selector);
 
-                    EditorCreatorEleNiv(Eleid,nivelId,description.getText().toString(),selector);
+                    }
 
                 }
                 finish();
@@ -117,6 +133,25 @@ public class Actividad_AddDescriptions extends AppCompatActivity {
                 if(!eleNivDescription.getDescription().equals(description)) {
                     Log.d("EleNivDescription", "updating");
                     eleNivDescription.setDescription(description);
+                    eleNivDescription.save();
+                }
+            }
+        }
+    }
+
+    public void EditorCreatorEvalEleNiv(Long Elemento,Long Nivel, int nota,boolean credit){
+        if (!credit){
+            Log.d("EleNivDescription", "saving");
+            EleNivDescription elenivdescription = new EleNivDescription(Elemento,Nivel,nota);
+            elenivdescription.save();
+        }else{
+
+            List<EleNivDescription>  eleNivDescriptions = EleNivDescription.find(EleNivDescription.class,"elemento = ? and nivel = ?",String.valueOf(Elemento),String.valueOf(Nivel));
+            if(eleNivDescriptions.size()>0){
+                EleNivDescription eleNivDescription= eleNivDescriptions.get(0);
+                if(eleNivDescription.getNota()!=nota) {
+                    Log.d("EleNivDescription", "updating");
+                    eleNivDescription.setNota(nota);
                     eleNivDescription.save();
                 }
             }

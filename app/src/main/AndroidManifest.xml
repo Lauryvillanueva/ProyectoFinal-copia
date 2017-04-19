@@ -76,7 +76,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Actividad_AddDescriptions"
-            android:label="@string/title_activity_actividad__add_descriptions"
+            android:label=""
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

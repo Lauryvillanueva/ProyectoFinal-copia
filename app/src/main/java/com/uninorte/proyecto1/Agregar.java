@@ -467,8 +467,10 @@ public class Agregar extends AppCompatActivity {
 
     public void onClick_Evaluar(View view) {
         Intent i = new Intent(Agregar.this,Actividad_Categorias.class);
+        i.putExtra("Rub_name",RubricaSelEva.getName());
         i.putExtra("OpcionCreEva", false);
         startActivity(i);
+
 
     }
 }

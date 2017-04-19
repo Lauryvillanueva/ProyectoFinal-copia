@@ -48,8 +48,12 @@ public class CustomAdapterEva extends  RecyclerView.Adapter<CustomAdapterEva.Vie
         Evaluacion evaluacionList = evaluacionLists.get(position);
         ViewHolder mViewHolderEva = viewHolder;
         mViewHolderEva.tvEleName.setText(evaluacionList.getName());
-        mViewHolderEva.buttonedit.setVisibility(View.GONE);
-        mViewHolderEva.buttonview.setVisibility(View.GONE);
+        mViewHolderEva.buttonedit.setFocusable(false);
+        mViewHolderEva.buttonedit.setFocusableInTouchMode(false);
+        mViewHolderEva.buttonedit.setTag(position);
+        mViewHolderEva.buttonview.setFocusable(false);
+        mViewHolderEva.buttonview.setFocusableInTouchMode(false);
+        mViewHolderEva.buttonview.setTag(position);
         mViewHolderEva.buttonnote.setVisibility(View.GONE);
 
 
