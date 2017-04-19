@@ -118,7 +118,7 @@ public class Actividad_Categorias extends AppCompatActivity {
                 categoria.delete();
                 initialCount -= 1;
 
-                Snackbar.make(layoutRoot, "Nivel Eliminado", Snackbar.LENGTH_SHORT)
+                Snackbar.make(layoutRoot, "Categoria Eliminada", Snackbar.LENGTH_SHORT)
                         .setAction("DESHACER", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {

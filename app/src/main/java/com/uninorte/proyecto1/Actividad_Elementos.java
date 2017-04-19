@@ -108,20 +108,20 @@ public class Actividad_Elementos extends AppCompatActivity {
                 //Remove swiped item from list and notify the RecyclerView
 
                 final int position = viewHolder.getAdapterPosition();
-                final Elemento categoria = elementosList.get(viewHolder.getAdapterPosition());
+                final Elemento elemento = elementosList.get(viewHolder.getAdapterPosition());
                 elementosList.remove(viewHolder.getAdapterPosition());
                 customAdapterEle.notifyItemRemoved(position);
 
-                categoria.delete();
+                elemento.delete();
                 initialCount -= 1;
 
-                Snackbar.make(layoutRoot, "Nivel Eliminado", Snackbar.LENGTH_SHORT)
+                Snackbar.make(layoutRoot, "Elemento Eliminado", Snackbar.LENGTH_SHORT)
                         .setAction("DESHACER", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
 
-                                categoria.save();
-                                elementosList.add(position, categoria);
+                                elemento.save();
+                                elementosList.add(position, elemento);
                                 customAdapterEle.notifyItemInserted(position);
                                 initialCount += 1;
 

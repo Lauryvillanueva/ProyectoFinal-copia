@@ -33,14 +33,16 @@ public class Agregar extends AppCompatActivity {
 
     private EditText nombre,Epeso;
     private TextView title,estado,pesocat;
-    private Spinner stateEstud;
+    private Spinner stateEstud,selectRub;
     boolean editing, viewing;
     private String name;
-    private Button eNivel,eCateg,eDesc;
+    private Button eNivel,eCateg,eDesc,evaluar;
 
     private Materia materiaestud;
-    private Rubrica rubricaSel;
+    private Rubrica rubricaSel,RubricaSelEva;
     private Categoria categoriaEle;
+
+    private SpinnerAdapterRub spinnerAdapterRub;
 
     CoordinatorLayout layoutRoot;
 
@@ -62,12 +64,33 @@ public class Agregar extends AppCompatActivity {
 
         estado=(TextView) findViewById(R.id.textViewState);
         stateEstud = (Spinner) findViewById(R.id.StateEstud);
+        selectRub=(Spinner) findViewById(R.id.selectRubrica);
 
         eNivel=(Button) findViewById(R.id.editNiv);
         eCateg=(Button) findViewById(R.id.editCat);
+        evaluar=(Button) findViewById(R.id.evaluar);
 
         String[] valores = {"Activo","Inactivo"};
         stateEstud.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, valores));
+
+        if(Rubrica.count(Rubrica.class)>0) {
+            spinnerAdapterRub = new SpinnerAdapterRub(this, android.R.layout.simple_spinner_item, Rubrica.listAll(Rubrica.class));
+            selectRub.setAdapter(spinnerAdapterRub);
+
+            selectRub.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    RubricaSelEva = spinnerAdapterRub.getItem(i);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+
+
+        }
 
         title=(TextView) findViewById(R.id.title);
         title.setText("Agregar "+getIntent().getStringExtra("title"));
@@ -113,6 +136,13 @@ public class Agregar extends AppCompatActivity {
                                 categoriaEle=Categoria.find(Categoria.class,"name =  ?", getIntent().getStringExtra("Cat_name")).get(0);
                                 MainInputData("Ele_name");
 
+                            }else{
+                                if (title.getText().toString().equals("Agregar Evaluacion")){
+                                    selectRub.setVisibility(View.VISIBLE);
+                                    evaluar.setVisibility(View.VISIBLE);
+                                    materiaestud = Materia.findById(Materia.class,getIntent().getLongExtra("Mat_id",0));
+                                    MainInputData("Eva_name");
+                                }
                             }
                         }
                     }
@@ -146,6 +176,11 @@ public class Agregar extends AppCompatActivity {
                 int pesocatele = getIntent().getIntExtra("CatEle_peso",0);
                 Epeso.setText(String.valueOf(pesocatele));
             }
+            if(getIntent().getStringExtra("title").equals("Evaluacion")){
+                int state = (int) getIntent().getLongExtra("Rub_id",0);
+                selectRub.setSelection(state);
+
+            }
         }
         if (viewing){
             name = getIntent().getStringExtra(extra);
@@ -163,6 +198,12 @@ public class Agregar extends AppCompatActivity {
                 Epeso.setText(String.valueOf(pesocatele));
                 Epeso.setFocusable(false);
                 Epeso.setFocusableInTouchMode(false);
+            }
+            if(getIntent().getStringExtra("title").equals("Evaluacion")){
+                int state = (int) getIntent().getLongExtra("Rub_id",0);
+                selectRub.setSelection(state);
+                selectRub.setEnabled(false);
+                selectRub.setClickable(false);
             }
         }
     }

@@ -26,6 +26,10 @@ public class Materia extends SugarRecord implements Serializable{
         return Estudiante.find(Estudiante.class,"materia = ?",""+this.getId());
     }
 
+    public List<Evaluacion> getEvaluaciones(){
+        return Evaluacion.find(Evaluacion.class,"materia = ?",""+this.getId());
+    }
+
 
     public String getName() {
         return name;

@@ -221,6 +221,11 @@ public class Actividad_Materias extends AppCompatActivity {
         startActivity(i);
     }
     public void onClick_Note(View view){
+        int position = (int) view.getTag();
+        Intent i = new Intent(Actividad_Materias.this,Actividad_Evaluaciones.class);
+        i.putExtra("Mat_id",materiasList.get(position).getId());
+        startActivity(i);
+
 
     }
     private void action(String resid) {
