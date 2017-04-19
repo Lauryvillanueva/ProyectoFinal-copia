@@ -43,7 +43,6 @@ public class Actividad_Estudiantes extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         title=(TextView) findViewById(R.id.toolbar_title);
-        title.setText("");
 
         layoutRoot=(CoordinatorLayout) findViewById(R.id.root);
 
