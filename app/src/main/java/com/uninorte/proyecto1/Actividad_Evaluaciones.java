@@ -66,7 +66,7 @@ public class Actividad_Evaluaciones extends AppCompatActivity {
             list.setLayoutManager(new LinearLayoutManager(this));
 
             if (evaluacionesList.isEmpty())
-                Snackbar.make(layoutRoot, "No hay Evaluacions.", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(layoutRoot, "No hay Evaluaciones.", Snackbar.LENGTH_LONG).show();
             else{
                 customAdapterEva.SetOnItemClickListener(new CustomAdapterEva.OnItemClickListener() {
                     @Override

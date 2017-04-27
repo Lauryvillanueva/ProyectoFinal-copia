@@ -61,7 +61,7 @@ public class Actividad_Niveles extends AppCompatActivity {
             //estudiantesList = Estudiante.find(Estudiante.class,"materia=?",new String[]{materiaEstud.getId().toString()});
             nivelesList = rubricaNivel.getNiveles();
 
-            customAdapterNivel = new CustomAdapterNivel(this,nivelesList);
+            customAdapterNivel = new CustomAdapterNivel(this,nivelesList,true);
             list.setAdapter(customAdapterNivel);
             list.setLayoutManager(new LinearLayoutManager(this));
 

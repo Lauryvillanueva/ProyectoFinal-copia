@@ -7,45 +7,16 @@ import com.orm.SugarRecord;
  */
 
 public class ElemenNivel extends SugarRecord {
-    private Long elemento,nivel,estudiante,materia;
+    private Long elemento,nivel;
     private String description;
-    private int nota;
 
     public ElemenNivel(Long elemento, Long nivel, String description) {
         this.elemento = elemento;
         this.nivel = nivel;
         this.description = description;
-        this.nota=0;
-        this.estudiante=new Long("-1");
-        this.materia=new Long("-1");
     }
 
-    public ElemenNivel() {
-    }
-
-    public Long getEstudiante() {
-        return estudiante;
-    }
-
-    public Long getMateria() {
-        return materia;
-    }
-
-    public void setMateria(Long materia) {
-        this.materia = materia;
-    }
-
-    public void setEstudiante(Long estudiante) {
-        this.estudiante = estudiante;
-    }
-
-    public int getNota() {
-        return nota;
-    }
-
-    public void setNota(int nota) {
-        this.nota = nota;
-    }
+    public ElemenNivel() {    }
 
     public Long getElemento() {
         return elemento;

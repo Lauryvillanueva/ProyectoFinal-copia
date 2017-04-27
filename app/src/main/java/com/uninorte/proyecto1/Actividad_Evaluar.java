@@ -19,11 +19,13 @@ import org.w3c.dom.Text;
 
 import java.util.List;
 
+import fr.ganfra.materialspinner.MaterialSpinner;
+
 public class Actividad_Evaluar extends AppCompatActivity {
 
-    private TextView tvMateria,tvRubrica;
+    private TextView tvMateria,tvRubrica,tvElemento;
     private EditText etNota;
-    private Spinner spEstud,spCat,spEle;
+    private MaterialSpinner spEstud,spCat,spEle;
     private RecyclerView list;
 
     private Rubrica rubrica;
@@ -61,9 +63,13 @@ public class Actividad_Evaluar extends AppCompatActivity {
         tvRubrica = (TextView) findViewById(R.id.textViewRubrica);
         tvRubrica.setText(rubrica.getName());
 
-        spEstud=(Spinner) findViewById(R.id.spinnerEstud);
-        spCat=(Spinner) findViewById(R.id.spinnerCateg);
-        spEle=(Spinner) findViewById(R.id.spinnerElemento);
+        tvElemento=(TextView) findViewById(R.id.textViewElemento);
+        tvElemento.setVisibility(View.INVISIBLE);
+
+        spEstud=(MaterialSpinner) findViewById(R.id.spinnerEstud);
+        spCat=(MaterialSpinner) findViewById(R.id.spinnerCateg);
+        spEle=(MaterialSpinner) findViewById(R.id.spinnerElemento);
+        spEle.setVisibility(View.INVISIBLE);
 
         etNota=(EditText) findViewById(R.id.editTextNota);
         etNota.setFilters(new InputFilter[]{new InputFilterMinMax("0", "5")});
@@ -73,44 +79,61 @@ public class Actividad_Evaluar extends AppCompatActivity {
             categoriaList= rubrica.getCategorias();
 
             nivelList=rubrica.getNiveles();
-            customAdapterNivel = new CustomAdapterNivel(this,nivelList);
+            customAdapterNivel = new CustomAdapterNivel(this,nivelList,false);
             list.setAdapter(customAdapterNivel);
             list.setLayoutManager(new LinearLayoutManager(this));
 
             spinnerAdapterEstud= new SpinnerAdapterEstud(this, android.R.layout.simple_spinner_item, estudianteList);
+            spinnerAdapterEstud.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spEstud.setAdapter(spinnerAdapterEstud);
 
             spinnerAdapterCat= new SpinnerAdapterCat(this, android.R.layout.simple_spinner_item, categoriaList);
+            spinnerAdapterCat.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spCat.setAdapter(spinnerAdapterCat);
 
             spCat.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     if(Nivel.count(Nivel.class)>0){
-                        elementoList=spinnerAdapterCat.getItem(i).getElementos();
-                        spinnerAdapterEle=new SpinnerAdapterEle(Actividad_Evaluar.this, android.R.layout.simple_spinner_item, elementoList);
-                        spEle.setAdapter(spinnerAdapterEle);
+                        if(i!=-1) {
+                            elementoList = spinnerAdapterCat.getItem(i).getElementos();
+                            spinnerAdapterEle = new SpinnerAdapterEle(Actividad_Evaluar.this, android.R.layout.simple_spinner_item, elementoList);
+                            spinnerAdapterEle.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            spEle.setAdapter(spinnerAdapterEle);
+                            tvElemento.setVisibility(View.VISIBLE);
+                            spEle.setVisibility(View.VISIBLE);
 
-                        spEle.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                            @Override
-                            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                                list.setVisibility(View.VISIBLE);
-                            }
 
-                            @Override
-                            public void onNothingSelected(AdapterView<?> adapterView) {
+                            spEle.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                @Override
+                                public void onItemSelected(AdapterView<?> adapterView, View view, int position, long lon) {
+                                    if(position!=-1){
+                                        list.setVisibility(View.VISIBLE);
+                                    }else{
+                                        list.setVisibility(View.GONE);
+                                    }
+                                }
+
+                                @Override
+                                public void onNothingSelected(AdapterView<?> adapterView) {
+                                    list.setVisibility(View.GONE);
+                                }
+                            });
+
+                            if (elementoList.isEmpty()) {
+                                Snackbar.make(layoutRoot, "No hay Elementos.", Snackbar.LENGTH_LONG).show();
                                 list.setVisibility(View.GONE);
-                            }
-                        });
 
-                        if(elementoList.isEmpty()){
-                            Snackbar.make(layoutRoot, "No hay Elementos.", Snackbar.LENGTH_LONG).show();
+                            }
+                        }else{
+                            list.setVisibility(View.GONE);
                         }
                     }
                 }
 
                 @Override
                 public void onNothingSelected(AdapterView<?> adapterView) {
+
 
                 }
             });

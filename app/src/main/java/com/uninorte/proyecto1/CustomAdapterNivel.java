@@ -13,13 +13,15 @@ import java.util.List;
 public class CustomAdapterNivel extends RecyclerView.Adapter<CustomAdapterNivel.ViewHolder>{
     private List<Nivel> nivelLists;
     private Context context;
+    private boolean selector;
 
     OnItemClickListener clickListener;
 
 
-    public CustomAdapterNivel(Context context,List<Nivel> nivelLists) {
+    public CustomAdapterNivel(Context context,List<Nivel> nivelLists, boolean selector) {
         this.nivelLists = nivelLists;
         this.context = context;
+        this.selector=selector;
     }
 
 
@@ -45,13 +47,19 @@ public class CustomAdapterNivel extends RecyclerView.Adapter<CustomAdapterNivel.
         Nivel nivelList = nivelLists.get(position);
         ViewHolder mViewHolderNivel = viewHolder;
         mViewHolderNivel.tvNivelName.setText(nivelList.getName());
-        mViewHolderNivel.buttonedit.setFocusable(false);
-        mViewHolderNivel.buttonedit.setFocusableInTouchMode(false);
-        mViewHolderNivel.buttonedit.setTag(position);
-        mViewHolderNivel.buttonview.setFocusable(false);
-        mViewHolderNivel.buttonview.setFocusableInTouchMode(false);
-        mViewHolderNivel.buttonview.setTag(position);
-        mViewHolderNivel.buttonnote.setVisibility(View.INVISIBLE);
+        if (selector){
+            mViewHolderNivel.buttonedit.setFocusable(false);
+            mViewHolderNivel.buttonedit.setFocusableInTouchMode(false);
+            mViewHolderNivel.buttonedit.setTag(position);
+            mViewHolderNivel.buttonview.setFocusable(false);
+            mViewHolderNivel.buttonview.setFocusableInTouchMode(false);
+            mViewHolderNivel.buttonview.setTag(position);
+        }else{
+            mViewHolderNivel.buttonedit.setVisibility(View.GONE);
+            mViewHolderNivel.buttonview.setVisibility(View.GONE);
+        }
+
+        mViewHolderNivel.buttonnote.setVisibility(View.GONE);
 
     }
 
