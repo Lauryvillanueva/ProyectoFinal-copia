@@ -89,8 +89,8 @@ public class Actividad_AddDescriptions extends AppCompatActivity {
                         .setAction("Action", null).show();*/
                 boolean selector;
                 Elemento elemento = Elemento.findById(Elemento.class,Eleid);
-                List<EleNivDescription> elenivdescriptions = elemento.getDescriptions();
-                Log.d("EleNivDescription", "selector: "+elenivdescriptions.size());
+                List<ElemenNivel> elenivdescriptions = elemento.getDescriptions();
+                Log.d("ElemenNivel", "selector: "+elenivdescriptions.size());
 
                 for (int i = 0; i < customAdapterEleNiv.getItemCount(); i++){
                     nivelId=Long.valueOf(String.valueOf(i));
@@ -109,9 +109,6 @@ public class Actividad_AddDescriptions extends AppCompatActivity {
                     }
                     if(mode) {
                         EditorCreatorEleNiv(Eleid, nivelId, description.getText().toString(), selector);
-                    }else{
-                        EditorCreatorEvalEleNiv(Eleid, nivelId,Integer.parseInt(nota.getText().toString()), selector);
-
                     }
 
                 }
@@ -122,41 +119,23 @@ public class Actividad_AddDescriptions extends AppCompatActivity {
 
     public void EditorCreatorEleNiv(Long Elemento,Long Nivel, String description,boolean credit){
         if (!credit){
-            Log.d("EleNivDescription", "saving");
-            EleNivDescription elenivdescription = new EleNivDescription(Elemento,Nivel,description);
+            Log.d("ElemenNivel", "saving");
+            ElemenNivel elenivdescription = new ElemenNivel(Elemento,Nivel,description);
             elenivdescription.save();
         }else{
 
-            List<EleNivDescription>  eleNivDescriptions = EleNivDescription.find(EleNivDescription.class,"elemento = ? and nivel = ?",String.valueOf(Elemento),String.valueOf(Nivel));
-            if(eleNivDescriptions.size()>0){
-                EleNivDescription eleNivDescription= eleNivDescriptions.get(0);
-                if(!eleNivDescription.getDescription().equals(description)) {
-                    Log.d("EleNivDescription", "updating");
-                    eleNivDescription.setDescription(description);
-                    eleNivDescription.save();
+            List<ElemenNivel> elemenNiveles = ElemenNivel.find(ElemenNivel.class,"elemento = ? and nivel = ?",String.valueOf(Elemento),String.valueOf(Nivel));
+            if(elemenNiveles.size()>0){
+                ElemenNivel elemenNivel = elemenNiveles.get(0);
+                if(!elemenNivel.getDescription().equals(description)) {
+                    Log.d("ElemenNivel", "updating");
+                    elemenNivel.setDescription(description);
+                    elemenNivel.save();
                 }
             }
         }
     }
 
-    public void EditorCreatorEvalEleNiv(Long Elemento,Long Nivel, int nota,boolean credit){
-        if (!credit){
-            Log.d("EleNivDescription", "saving");
-            EleNivDescription elenivdescription = new EleNivDescription(Elemento,Nivel,nota);
-            elenivdescription.save();
-        }else{
-
-            List<EleNivDescription>  eleNivDescriptions = EleNivDescription.find(EleNivDescription.class,"elemento = ? and nivel = ?",String.valueOf(Elemento),String.valueOf(Nivel));
-            if(eleNivDescriptions.size()>0){
-                EleNivDescription eleNivDescription= eleNivDescriptions.get(0);
-                if(eleNivDescription.getNota()!=nota) {
-                    Log.d("EleNivDescription", "updating");
-                    eleNivDescription.setNota(nota);
-                    eleNivDescription.save();
-                }
-            }
-        }
-    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {

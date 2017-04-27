@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.List;
@@ -56,14 +55,14 @@ public class CustomAdapterEleNiv extends  RecyclerView.Adapter<CustomAdapterEleN
         ViewHolder mViewHolderEleNiv = viewHolder;
         mViewHolderEleNiv.tvNivName.setText(nivelList.getName());
         Long count;
-        count= EleNivDescription.count(EleNivDescription.class);
+        count= ElemenNivel.count(ElemenNivel.class);
         if (count>0) {
             Elemento elemento = Elemento.findById(Elemento.class,elementoid);
-            List<EleNivDescription> elenivdescriptions= elemento.getDescriptions();
+            List<ElemenNivel> elenivdescriptions= elemento.getDescriptions();
             Log.d("onBindViewHolder: ", "Count: "+elenivdescriptions.size());
             if (!elenivdescriptions.isEmpty()) {
                 if(position<elenivdescriptions.size()) {
-                    EleNivDescription elenivdescription = elenivdescriptions.get(position);
+                    ElemenNivel elenivdescription = elenivdescriptions.get(position);
                     mViewHolderEleNiv.Edesc.setText(elenivdescription.getDescription());
                 }
             }

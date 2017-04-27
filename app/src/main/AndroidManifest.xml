@@ -77,6 +77,10 @@
         <activity
             android:name=".Actividad_AddDescriptions"
             android:label=""
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Actividad_Evaluar"
+            android:label=""
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

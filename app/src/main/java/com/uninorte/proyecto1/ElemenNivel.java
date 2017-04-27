@@ -6,25 +6,37 @@ import com.orm.SugarRecord;
  * Created by daniel on 17/04/17.
  */
 
-public class EleNivDescription extends SugarRecord {
-    private Long elemento,nivel;
+public class ElemenNivel extends SugarRecord {
+    private Long elemento,nivel,estudiante,materia;
     private String description;
     private int nota;
 
-    public EleNivDescription(Long elemento, Long nivel, String description) {
+    public ElemenNivel(Long elemento, Long nivel, String description) {
         this.elemento = elemento;
         this.nivel = nivel;
         this.description = description;
         this.nota=0;
+        this.estudiante=new Long("-1");
+        this.materia=new Long("-1");
     }
 
-    public EleNivDescription(Long elemento, Long nivel, int nota) {
-        this.elemento = elemento;
-        this.nivel = nivel;
-        this.nota = nota;
+    public ElemenNivel() {
     }
 
-    public EleNivDescription() {
+    public Long getEstudiante() {
+        return estudiante;
+    }
+
+    public Long getMateria() {
+        return materia;
+    }
+
+    public void setMateria(Long materia) {
+        this.materia = materia;
+    }
+
+    public void setEstudiante(Long estudiante) {
+        this.estudiante = estudiante;
     }
 
     public int getNota() {

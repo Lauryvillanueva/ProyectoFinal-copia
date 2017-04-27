@@ -33,7 +33,7 @@ import java.util.List;
 public class Agregar extends AppCompatActivity {
 
     private EditText nombre,Epeso;
-    private TextView title,estado,pesocat;
+    private TextView title,estado,pesocat,tvSelectRub;
     private Spinner stateEstud,selectRub;
     boolean editing, viewing;
     private String name;
@@ -59,6 +59,7 @@ public class Agregar extends AppCompatActivity {
         eDesc=(Button) findViewById(R.id.addDescriptions);
 
         pesocat=(TextView) findViewById(R.id.textViewPesoCat);
+        tvSelectRub = (TextView) findViewById(R.id.textViewselectRub);
         Epeso=(EditText) findViewById(R.id.editTextPeso);
         //Epeso.setHint("Peso "+getIntent().getStringExtra("title"));
         Epeso.setFilters(new InputFilter[]{new InputFilterMinMax("1", "100")});
@@ -141,7 +142,7 @@ public class Agregar extends AppCompatActivity {
                             }else{
                                 if (title.getText().toString().equals("Agregar Evaluacion")){
                                     selectRub.setVisibility(View.VISIBLE);
-                                    evaluar.setVisibility(View.VISIBLE);
+                                    tvSelectRub.setVisibility(View.VISIBLE);
                                     materiaestud = Materia.findById(Materia.class,getIntent().getLongExtra("Mat_id",0));
                                     MainInputData("Eva_name");
                                 }
@@ -180,6 +181,7 @@ public class Agregar extends AppCompatActivity {
             }
             if(getIntent().getStringExtra("title").equals("Evaluacion")){
                 int state = (int) getIntent().getLongExtra("Rub_id",0);
+                evaluar.setVisibility(View.VISIBLE);
                 selectRub.setSelection(state);
 
             }
@@ -466,10 +468,15 @@ public class Agregar extends AppCompatActivity {
     }
 
     public void onClick_Evaluar(View view) {
-        Intent i = new Intent(Agregar.this,Actividad_Categorias.class);
-        i.putExtra("Rub_name",RubricaSelEva.getName());
-        i.putExtra("OpcionCreEva", false);
-        startActivity(i);
+        if(!editing && !viewing){
+            Snackbar.make(layoutRoot, "Guardar Evaluacion Primero.", Snackbar.LENGTH_LONG).show();
+        }else {
+            Intent i = new Intent(Agregar.this, Actividad_Evaluar.class);
+            i.putExtra("Rub_id", RubricaSelEva.getId());
+            i.putExtra("Mat_id",materiaestud.getId());
+            //i.putExtra("OpcionCreEva", false);
+            startActivity(i);
+        }
 
 
     }

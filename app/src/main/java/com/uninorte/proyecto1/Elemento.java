@@ -48,7 +48,7 @@ public class Elemento extends SugarRecord {
         this.categoria = categoria.getId();
     }
 
-    public List<EleNivDescription> getDescriptions(){
-        return EleNivDescription.find(EleNivDescription.class,"elemento = ?",""+this.getId());
+    public List<ElemenNivel> getDescriptions(){
+        return ElemenNivel.find(ElemenNivel.class,"elemento = ?",""+this.getId());
     }
 }

@@ -106,4 +106,5 @@
     <string name="title_activity_actividad__categorias">Actividad_Categorias</string>
     <string name="title_activity_actividad__elementos">Actividad_Elementos</string>
     <string name="title_activity_actividad__add_descriptions">Actividad_AddDescriptions</string>
+    <string name="title_activity_actividad__evaluar">Actividad_Evaluar</string>
 </resources>
