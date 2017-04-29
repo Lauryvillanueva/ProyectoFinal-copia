@@ -1,19 +1,25 @@
 package com.uninorte.proyecto1;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
+import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -23,10 +29,11 @@ import fr.ganfra.materialspinner.MaterialSpinner;
 
 public class Actividad_Evaluar extends AppCompatActivity {
 
-    private TextView tvMateria,tvRubrica,tvElemento;
+    private TextView tvMateria,tvRubrica,tvElemento,tvNota;
     private EditText etNota;
     private MaterialSpinner spEstud,spCat,spEle;
     private RecyclerView list;
+
 
     private Rubrica rubrica;
     private Materia materia;
@@ -42,6 +49,8 @@ public class Actividad_Evaluar extends AppCompatActivity {
     private CustomAdapterNivel customAdapterNivel;
 
     CoordinatorLayout layoutRoot;
+
+    private boolean bEstudiante,bElemento;
 
 
     @Override
@@ -71,8 +80,15 @@ public class Actividad_Evaluar extends AppCompatActivity {
         spEle=(MaterialSpinner) findViewById(R.id.spinnerElemento);
         spEle.setVisibility(View.INVISIBLE);
 
+
+        tvNota=(TextView) findViewById(R.id.textViewNote);
         etNota=(EditText) findViewById(R.id.editTextNota);
         etNota.setFilters(new InputFilter[]{new InputFilterMinMax("0", "5")});
+        tvNota.setVisibility(View.INVISIBLE);
+        etNota.setVisibility(View.INVISIBLE);
+
+        bEstudiante=false;
+        bElemento=false;
 
         if(Estudiante.count(Estudiante.class)>0 && Categoria.count(Categoria.class)>0 && Nivel.count(Nivel.class)>0){
             estudianteList= materia.getEstudiantes();
@@ -86,6 +102,27 @@ public class Actividad_Evaluar extends AppCompatActivity {
             spinnerAdapterEstud= new SpinnerAdapterEstud(this, android.R.layout.simple_spinner_item, estudianteList);
             spinnerAdapterEstud.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spEstud.setAdapter(spinnerAdapterEstud);
+            spEstud.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    if(i!=-1){
+                        bEstudiante=true;
+                        if(bEstudiante && bElemento){
+                            tvNota.setVisibility(View.VISIBLE);
+                            etNota.setVisibility(View.VISIBLE);
+                        }
+                    }else{
+                        tvNota.setVisibility(View.INVISIBLE);
+                        etNota.setVisibility(View.INVISIBLE);
+                        bEstudiante=false;
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
 
             spinnerAdapterCat= new SpinnerAdapterCat(this, android.R.layout.simple_spinner_item, categoriaList);
             spinnerAdapterCat.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -108,8 +145,17 @@ public class Actividad_Evaluar extends AppCompatActivity {
                                 @Override
                                 public void onItemSelected(AdapterView<?> adapterView, View view, int position, long lon) {
                                     if(position!=-1){
+                                        Log.d("SpinnerElementos", "onItemSelected: " +position);
+                                        bElemento=true;
                                         list.setVisibility(View.VISIBLE);
+                                        if(bEstudiante && bElemento){
+                                            tvNota.setVisibility(View.VISIBLE);
+                                            etNota.setVisibility(View.VISIBLE);
+                                        }
                                     }else{
+                                        bElemento=false;
+                                        tvNota.setVisibility(View.INVISIBLE);
+                                        etNota.setVisibility(View.INVISIBLE);
                                         list.setVisibility(View.GONE);
                                     }
                                 }
@@ -127,14 +173,17 @@ public class Actividad_Evaluar extends AppCompatActivity {
                             }
                         }else{
                             list.setVisibility(View.GONE);
+                            tvElemento.setVisibility(View.INVISIBLE);
+                            spEle.setVisibility(View.INVISIBLE);
                         }
                     }
                 }
 
                 @Override
                 public void onNothingSelected(AdapterView<?> adapterView) {
-
-
+                    list.setVisibility(View.GONE);
+                    spEle.setVisibility(View.INVISIBLE);
+                    tvElemento.setVisibility(View.INVISIBLE);
                 }
             });
 
@@ -154,7 +203,28 @@ public class Actividad_Evaluar extends AppCompatActivity {
                 customAdapterNivel.SetOnItemClickListener(new CustomAdapterNivel.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
+                       String description="";
 
+                       List <ElemenNivel> elemenNivels = ((Elemento) spEle.getSelectedItem()).getDescriptions();
+                        if (!elemenNivels.isEmpty()) {
+                            if(nivelList.get(position).getId()<=elemenNivels.size()) {
+                                description=elemenNivels.get(nivelList.get(position).getId().intValue()-1).getDescription();
+                            }else{
+                                Toast.makeText(Actividad_Evaluar.this, "No hay descripcion Guardadas para este Nivel", Toast.LENGTH_SHORT).show();
+                            }
+                        }else{
+                            Toast.makeText(Actividad_Evaluar.this, "No hay descripciones Guardadas para este Elemento", Toast.LENGTH_SHORT).show();
+                        }
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Actividad_Evaluar.this);
+                        LayoutInflater inflater = getLayoutInflater();
+                        View dialogView = inflater.inflate(R.layout.activity_nivelview,null);
+                       builder.setView(dialogView);
+                        TextView title= (TextView) dialogView.findViewById(R.id.toolbar_title);
+                        title.setText(nivelList.get(position).getName());
+                        TextView Description= (TextView) dialogView.findViewById(R.id.TextViewDescription);
+                        Description.setText(description);
+                        builder.create();
+                        builder.show().getWindow().setLayout(600,500);
                     }
                 });
             }

@@ -49,6 +49,6 @@ public class Elemento extends SugarRecord {
     }
 
     public List<ElemenNivel> getDescriptions(){
-        return ElemenNivel.find(ElemenNivel.class,"elemento = ?",""+this.getId());
+        return ElemenNivel.find(ElemenNivel.class,"elemento = ?",new String[] {""+this.getId()},null,"nivel",null);
     }
 }

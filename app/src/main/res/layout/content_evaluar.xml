@@ -141,14 +141,15 @@
 
                     <TextView
                         android:id="@+id/textViewNote"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="80dp"
+                        android:layout_height="match_parent"
                         android:layout_marginRight="20dp"
-                        android:text="Nota Elemento:" />
+                        android:layout_weight="0.05"
+                        android:text="Nota:" />
 
                     <EditText
                         android:id="@+id/editTextNota"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:ems="10"
