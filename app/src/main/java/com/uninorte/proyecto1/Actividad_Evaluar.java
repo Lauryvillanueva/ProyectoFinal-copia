@@ -285,15 +285,18 @@ public class Actividad_Evaluar extends AppCompatActivity {
                                         Log.d("Notas", "updating");
                                         notaEstudElemento.setNota(calificacion);
                                         notaEstudElemento.save();
+                                        Toast.makeText(Actividad_Evaluar.this, "Nota Actualizada Exitosamente", Toast.LENGTH_SHORT).show();
                                     }else{
                                         Log.d("Notas", "saving");
                                         nota= new NotaEstudElemento(estudiante.getId(),evaluacionId,elemento.getId(),calificacion);
                                         nota.save();
+                                        Toast.makeText(Actividad_Evaluar.this, "Nota Guardada Exitosamente", Toast.LENGTH_SHORT).show();
                                     }
                                 }else{
                                     Log.d("Notas", "saving");
                                     nota= new NotaEstudElemento(estudiante.getId(),evaluacionId,elemento.getId(),calificacion);
                                     nota.save();
+                                    Toast.makeText(Actividad_Evaluar.this, "Nota Guardada Exitosamente", Toast.LENGTH_SHORT).show();
                                 }
                             }else{
                                 etNota.setError("No puede estar vacio");
