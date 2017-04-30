@@ -51,4 +51,7 @@ public class NotaEstudElemento extends SugarRecord {
     public void setNota(double nota) {
         this.nota = nota;
     }
+
+
 }
+

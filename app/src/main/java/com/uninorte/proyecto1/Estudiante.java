@@ -49,4 +49,21 @@ public class Estudiante extends SugarRecord {
     public List<NotaEstudElemento> getNotas(Long evaluacion){
         return NotaEstudElemento.find(NotaEstudElemento.class,"estudiante = ? and evaluacion = ?",new String[] {String.valueOf(this.getId()),String.valueOf(evaluacion)},null,"elemento",null);
     }
+
+    public NotaEstudElemento findRegister (Long evaluacion, Long elemento){
+        NotaEstudElemento notaEstudElemento;
+        List<NotaEstudElemento> notaEstudElementolist;
+        notaEstudElementolist =NotaEstudElemento.find(NotaEstudElemento.class,"estudiante = ? and elemento = ? and evaluacion = ?",String.valueOf(this.getId()),
+                String.valueOf(elemento),String.valueOf(evaluacion));
+        if(!notaEstudElementolist.isEmpty()) {
+            notaEstudElemento = notaEstudElementolist.get(0);
+            if (notaEstudElemento == null) {
+                return null;
+            } else {
+                return notaEstudElemento;
+            }
+        }else{
+            return null;
+        }
+    }
 }

@@ -121,13 +121,13 @@ public class Actividad_Evaluar extends AppCompatActivity {
                         if(bEstudiante && bElemento){
                             tvNota.setVisibility(View.VISIBLE);
                             etNota.setVisibility(View.VISIBLE);
-                            List<NotaEstudElemento> notaEstudElementos= estudiante.getNotas(evaluacionId);
-                            if(!notaEstudElementos.isEmpty()){
-                                if(elemento.getId()< notaEstudElementos.size()){
-                                    etNota.setText(String.valueOf(
-                                            notaEstudElementos.get(elemento.getId().intValue()-1).getNota()));
+                                NotaEstudElemento notaEstudElemento=estudiante.findRegister(evaluacionId,elemento.getId());
+                                if(notaEstudElemento!=null){
+                                    etNota.setText(String.valueOf(notaEstudElemento.getNota()));
+                                }else{
+                                    etNota.setText("");
                                 }
-                            }
+
 
                         }
                     }else{
@@ -141,7 +141,7 @@ public class Actividad_Evaluar extends AppCompatActivity {
 
                 @Override
                 public void onNothingSelected(AdapterView<?> adapterView) {
-
+                    Log.d("SpinnerEstud", "onNothingSelected");
                 }
             });
 
@@ -173,12 +173,15 @@ public class Actividad_Evaluar extends AppCompatActivity {
                                             tvNota.setVisibility(View.VISIBLE);
                                             etNota.setVisibility(View.VISIBLE);
                                             List<NotaEstudElemento> notaEstudElementos= estudiante.getNotas(evaluacionId);
-                                            if(!notaEstudElementos.isEmpty()){
-                                                if(elemento.getId()< notaEstudElementos.size()){
-                                                    etNota.setText(String.valueOf(
-                                                            notaEstudElementos.get(elemento.getId().intValue()-1).getNota()));
+
+                                                NotaEstudElemento notaEstudElemento=estudiante.findRegister(evaluacionId,elemento.getId());
+                                                if(notaEstudElemento!=null){
+                                                    Log.d("SpinnerEstud", "onItemSelected: "+ notaEstudElemento.getEstudiante());
+                                                    etNota.setText(String.valueOf(notaEstudElemento.getNota()));
+                                                }else{
+                                                    Log.d("SpinnerEstud", "onItemSelected: no nota");
+                                                    etNota.setText("");
                                                 }
-                                            }
                                         }
                                     }else{
                                         bElemento=false;
@@ -277,11 +280,11 @@ public class Actividad_Evaluar extends AppCompatActivity {
                                 NotaEstudElemento nota;
                                 Log.d("Notas", ""+notaEstudElementos.isEmpty());
                                 if(!notaEstudElementos.isEmpty()){
-                                    if(elemento.getId()< notaEstudElementos.size()){
+                                    NotaEstudElemento notaEstudElemento=estudiante.findRegister(evaluacionId,elemento.getId());
+                                    if(notaEstudElemento!=null){
                                         Log.d("Notas", "updating");
-                                        nota= notaEstudElementos.get(elemento.getId().intValue() - 1);
-                                        nota.setNota(calificacion);
-                                        nota.save();
+                                        notaEstudElemento.setNota(calificacion);
+                                        notaEstudElemento.save();
                                     }else{
                                         Log.d("Notas", "saving");
                                         nota= new NotaEstudElemento(estudiante.getId(),evaluacionId,elemento.getId(),calificacion);

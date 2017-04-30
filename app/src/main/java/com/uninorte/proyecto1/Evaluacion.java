@@ -45,4 +45,8 @@ public class Evaluacion extends SugarRecord {
     public void setMateria(Materia materia) {
         this.materia = materia.getId();
     }
+
+
+
+
 }
