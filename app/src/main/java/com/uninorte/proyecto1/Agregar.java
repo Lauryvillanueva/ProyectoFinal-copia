@@ -474,7 +474,7 @@ public class Agregar extends AppCompatActivity {
             Intent i = new Intent(Agregar.this, Actividad_Evaluar.class);
             i.putExtra("Rub_id", RubricaSelEva.getId());
             i.putExtra("Mat_id",materiaestud.getId());
-            //i.putExtra("OpcionCreEva", false);
+            i.putExtra("Eva_id", Evaluacion.find(Evaluacion.class,"name = ?",getIntent().getStringExtra("Eva_name")).get(0).getId());
             startActivity(i);
         }
 

@@ -2,6 +2,8 @@ package com.uninorte.proyecto1;
 
 import com.orm.SugarRecord;
 
+import java.util.List;
+
 /**
  * Created by daniel on 16/04/17.
  */
@@ -42,5 +44,9 @@ public class Estudiante extends SugarRecord {
 
     public void setMateria(Materia materia) {
         this.materia = materia.getId();
+    }
+
+    public List<NotaEstudElemento> getNotas(Long evaluacion){
+        return NotaEstudElemento.find(NotaEstudElemento.class,"estudiante = ? and evaluacion = ?",new String[] {String.valueOf(this.getId()),String.valueOf(evaluacion)},null,"elemento",null);
     }
 }

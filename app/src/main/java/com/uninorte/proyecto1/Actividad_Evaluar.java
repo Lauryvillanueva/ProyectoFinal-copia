@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -42,6 +43,10 @@ public class Actividad_Evaluar extends AppCompatActivity {
     private List<Nivel> nivelList;
     private List<Elemento> elementoList;
 
+    private Estudiante estudiante;
+    private Long evaluacionId;
+    private Elemento elemento;
+
     private SpinnerAdapterEstud spinnerAdapterEstud;
     private SpinnerAdapterCat spinnerAdapterCat;
     private SpinnerAdapterEle spinnerAdapterEle;
@@ -60,8 +65,13 @@ public class Actividad_Evaluar extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        estudiante=null;
+        elemento=null;
+
         layoutRoot=(CoordinatorLayout) findViewById(R.id.root);
         list = (RecyclerView)findViewById(R.id.ReciclerView);
+
+        evaluacionId=getIntent().getLongExtra("Eva_id",0);
 
         materia= Materia.findById(Materia.class,getIntent().getLongExtra("Mat_id",0));
         rubrica=Rubrica.findById(Rubrica.class,getIntent().getLongExtra("Rub_id",0));
@@ -83,7 +93,7 @@ public class Actividad_Evaluar extends AppCompatActivity {
 
         tvNota=(TextView) findViewById(R.id.textViewNote);
         etNota=(EditText) findViewById(R.id.editTextNota);
-        etNota.setFilters(new InputFilter[]{new InputFilterMinMax("0", "5")});
+        //etNota.setFilters(new InputFilter[]{new InputFilterMinMax("0", "5")});
         tvNota.setVisibility(View.INVISIBLE);
         etNota.setVisibility(View.INVISIBLE);
 
@@ -107,14 +117,25 @@ public class Actividad_Evaluar extends AppCompatActivity {
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     if(i!=-1){
                         bEstudiante=true;
+                        estudiante=estudianteList.get(i);
                         if(bEstudiante && bElemento){
                             tvNota.setVisibility(View.VISIBLE);
                             etNota.setVisibility(View.VISIBLE);
+                            List<NotaEstudElemento> notaEstudElementos= estudiante.getNotas(evaluacionId);
+                            if(!notaEstudElementos.isEmpty()){
+                                if(elemento.getId()< notaEstudElementos.size()){
+                                    etNota.setText(String.valueOf(
+                                            notaEstudElementos.get(elemento.getId().intValue()-1).getNota()));
+                                }
+                            }
+
                         }
                     }else{
                         tvNota.setVisibility(View.INVISIBLE);
                         etNota.setVisibility(View.INVISIBLE);
                         bEstudiante=false;
+                        etNota.setText("");
+                        estudiante=null;
                     }
                 }
 
@@ -145,18 +166,27 @@ public class Actividad_Evaluar extends AppCompatActivity {
                                 @Override
                                 public void onItemSelected(AdapterView<?> adapterView, View view, int position, long lon) {
                                     if(position!=-1){
-                                        Log.d("SpinnerElementos", "onItemSelected: " +position);
+                                        elemento=elementoList.get(position);
                                         bElemento=true;
                                         list.setVisibility(View.VISIBLE);
                                         if(bEstudiante && bElemento){
                                             tvNota.setVisibility(View.VISIBLE);
                                             etNota.setVisibility(View.VISIBLE);
+                                            List<NotaEstudElemento> notaEstudElementos= estudiante.getNotas(evaluacionId);
+                                            if(!notaEstudElementos.isEmpty()){
+                                                if(elemento.getId()< notaEstudElementos.size()){
+                                                    etNota.setText(String.valueOf(
+                                                            notaEstudElementos.get(elemento.getId().intValue()-1).getNota()));
+                                                }
+                                            }
                                         }
                                     }else{
                                         bElemento=false;
                                         tvNota.setVisibility(View.INVISIBLE);
                                         etNota.setVisibility(View.INVISIBLE);
                                         list.setVisibility(View.GONE);
+                                        etNota.setText("");
+                                        elemento=null;
                                     }
                                 }
 
@@ -239,10 +269,44 @@ public class Actividad_Evaluar extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                    if(estudiante!=null){
+                        if(elemento!=null){
+                            if(!TextUtils.isEmpty(etNota.getText().toString())){
+                                Double calificacion = Double.parseDouble(etNota.getText().toString());
+                                List<NotaEstudElemento> notaEstudElementos= estudiante.getNotas(evaluacionId);
+                                NotaEstudElemento nota;
+                                Log.d("Notas", ""+notaEstudElementos.isEmpty());
+                                if(!notaEstudElementos.isEmpty()){
+                                    if(elemento.getId()< notaEstudElementos.size()){
+                                        Log.d("Notas", "updating");
+                                        nota= notaEstudElementos.get(elemento.getId().intValue() - 1);
+                                        nota.setNota(calificacion);
+                                        nota.save();
+                                    }else{
+                                        Log.d("Notas", "saving");
+                                        nota= new NotaEstudElemento(estudiante.getId(),evaluacionId,elemento.getId(),calificacion);
+                                        nota.save();
+                                    }
+                                }else{
+                                    Log.d("Notas", "saving");
+                                    nota= new NotaEstudElemento(estudiante.getId(),evaluacionId,elemento.getId(),calificacion);
+                                    nota.save();
+                                }
+                            }else{
+                                etNota.setError("No puede estar vacio");
+                            }
+                        }else{
+                            Toast.makeText(Actividad_Evaluar.this, "Seleccionar Elemento", Toast.LENGTH_SHORT).show();
+                        }
+                    }else{
+                        Toast.makeText(Actividad_Evaluar.this, "Seleccionar Estudiante", Toast.LENGTH_SHORT).show();
+                    }
+
+
             }
         });
+
+
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
