@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -34,6 +35,9 @@ public class Actividad_SelectReporte extends AppCompatActivity {
     private List<Materia> materiaList;
     private List<Evaluacion> evaluacionList;
     private List<Estudiante> estudianteList;
+
+    private Evaluacion evaluacion;
+    private Estudiante estudiante;
 
     CoordinatorLayout layoutRoot;
 
@@ -78,6 +82,7 @@ public class Actividad_SelectReporte extends AppCompatActivity {
                                         @Override
                                         public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
                                             if(pos!=-1){
+                                                evaluacion=evaluacionList.get(pos);
                                                 btnVerReporte.setVisibility(View.VISIBLE);
                                             }else{
                                                 btnVerReporte.setVisibility(View.GONE);
@@ -106,6 +111,7 @@ public class Actividad_SelectReporte extends AppCompatActivity {
                                         @Override
                                         public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
                                             if(pos!=-1){
+                                                estudiante=estudianteList.get(pos);
                                                 btnVerReporte.setVisibility(View.VISIBLE);
                                             }else{
                                                 btnVerReporte.setVisibility(View.GONE);
@@ -154,6 +160,17 @@ public class Actividad_SelectReporte extends AppCompatActivity {
     }
 
     public void onClick_SelectReporte(View view) {
+        Intent i= new Intent(Actividad_SelectReporte.this,Actividad_VerReporte.class);
+        i.putExtra("Reporte",title);
+        switch (title){
+            case "Evaluacion":
+                i.putExtra("id",evaluacion.getId());
+                break;
+            case "Estudiante":
+                i.putExtra("id",estudiante.getId());
+                break;
+        }
+        startActivity(i);
 
     }
 

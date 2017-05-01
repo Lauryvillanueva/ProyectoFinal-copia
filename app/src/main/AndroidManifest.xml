@@ -86,7 +86,10 @@
             android:name=".Actividad_SelectReporte"
             android:label=""
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Actividad_VerReporte"></activity>
+
+        <activity android:name=".Actividad_VerReporte"
+            android:label=""
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest> <!-- android:theme="@android:style/Theme.Holo.Light.Dialog" -->

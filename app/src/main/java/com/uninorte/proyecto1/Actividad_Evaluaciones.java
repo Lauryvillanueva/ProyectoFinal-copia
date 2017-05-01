@@ -71,7 +71,7 @@ public class Actividad_Evaluaciones extends AppCompatActivity {
                 customAdapterEva.SetOnItemClickListener(new CustomAdapterEva.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Log.d("Evaluacions", "click");
+                        Log.d("Evaluaciones", "click " +position);
                     }
                 });
             }
