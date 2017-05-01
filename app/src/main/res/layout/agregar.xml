@@ -97,7 +97,7 @@
             app:layout_constraintHorizontal_bias="0.311"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewCateg" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewEvaluacion" />
 
         <TextView
             android:id="@+id/textViewPesoCat"
@@ -190,7 +190,7 @@
             app:layout_constraintHorizontal_bias="0.108"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewCateg" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewEvaluacion" />
 
 
         <Spinner

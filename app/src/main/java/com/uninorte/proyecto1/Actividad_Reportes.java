@@ -55,19 +55,20 @@ public class Actividad_Reportes extends AppCompatActivity {
 
         //NOTAS -- usa el row rowdreporteevaluacion
 
-        //Intent i = new Intent(Actividad_Reportes.this,ReporteEvaluacion.class);
-        //startActivity(i);
-
+        Intent i = new Intent(Actividad_Reportes.this,Actividad_SelectReporte.class);
+        i.putExtra("Reporte","Evaluacion");
+        startActivity(i);
     }
 
     public void onClick_reporteEst(View view) {
         //mostrar el recycler view de ASIGNATURAS, SELECCIONAR ASIGNATURA
         //mostrar el recycler view de ESTUDIANTES DE LA ASIG, SELECCIONAR ESTUDIANTE
 
-        //NOTAS -- usa el row rowreportestudiante
+        //NOTAS -- usa el row rowreportes
 
-        //Intent i = new Intent(Actividad_Reportes.this,ReporteEstudiantes.class);
-        //startActivity(i);
+        Intent i = new Intent(Actividad_Reportes.this,Actividad_SelectReporte.class);
+        i.putExtra("Reporte","Estudiante");
+        startActivity(i);
 
     }
 }
