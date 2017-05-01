@@ -51,7 +51,7 @@
                         app:ms_baseColor="@color/colorPrimary"
                         app:ms_enableErrorLabel="false"
                         app:ms_enableFloatingLabel="false"
-                        app:ms_hint="Seleccionar Estudiante"
+                        app:ms_hint="Seleccionar Materia"
                         app:ms_hintColor="@android:color/black"
 
                         app:ms_multiline="false" />
@@ -83,7 +83,7 @@
                         app:ms_baseColor="@color/colorPrimary"
                         app:ms_enableErrorLabel="false"
                         app:ms_enableFloatingLabel="false"
-                        app:ms_hint="Seleccionar Categoria"
+                        app:ms_hint="Seleccionar Evaluacion"
                         app:ms_hintColor="@android:color/black"
                         app:ms_multiline="false" />
 
@@ -115,7 +115,7 @@
                         app:ms_baseColor="@color/colorPrimary"
                         app:ms_enableErrorLabel="false"
                         app:ms_enableFloatingLabel="false"
-                        app:ms_hint="Seleccionar Elemento"
+                        app:ms_hint="Seleccionar Estudiante"
                         app:ms_hintColor="@android:color/black"
                         app:ms_multiline="false" />
 
@@ -124,7 +124,7 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/button3"
+                android:id="@+id/buttonVerReporte"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
@@ -132,6 +132,7 @@
                 android:layout_marginTop="30dp"
                 android:text="Ver Reporte"
                 android:theme="@style/AppTheme.ButtonBlue"
+                android:onClick="onClick_SelectReporte"
                 android:visibility="gone" />
 
         </LinearLayout>

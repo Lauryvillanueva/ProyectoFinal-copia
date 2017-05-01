@@ -321,7 +321,7 @@ public class Actividad_Evaluar extends AppCompatActivity {
         }
     }
 
-    public void dialogSave(String texto){
+    /*public void dialogSave(String texto){
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int choice) {
@@ -340,6 +340,6 @@ public class Actividad_Evaluar extends AppCompatActivity {
                 .setPositiveButton("Si", dialogClickListener)
                 .setNegativeButton("No",dialogClickListener);
 
-    }
+    }*/
 
 }
