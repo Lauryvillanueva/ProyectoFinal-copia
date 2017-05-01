@@ -15,7 +15,7 @@ public class CustomAdapterRep extends RecyclerView.Adapter<CustomAdapterRep.View
     private List<Reporte> reporteLists;
     private Context context;
 
-    OnItemClickListener clickListener;
+
 
 
     public CustomAdapterRep(Context context,List<Reporte> reporteLists) {
@@ -34,9 +34,9 @@ public class CustomAdapterRep extends RecyclerView.Adapter<CustomAdapterRep.View
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
-        View materiaView = inflater.inflate(R.layout.rowreportes, parent, false);
+        View reporteView = inflater.inflate(R.layout.rowreportes, parent, false);
 
-        ViewHolder viewHolder = new ViewHolder(materiaView);
+        ViewHolder viewHolder = new ViewHolder(reporteView);
         return viewHolder;
 
     }
@@ -59,7 +59,7 @@ public class CustomAdapterRep extends RecyclerView.Adapter<CustomAdapterRep.View
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         //
         public TextView tvNombre;
         public EditText etNota;
@@ -68,21 +68,12 @@ public class CustomAdapterRep extends RecyclerView.Adapter<CustomAdapterRep.View
             super(itemView);
             tvNombre=(TextView) itemView.findViewById(R.id.TextViewRowRep);
             etNota=(EditText) itemView.findViewById(R.id.EditTextRepoNota);
-            itemView.setOnClickListener(this);
+
         }
 
-        @Override
-        public void onClick(View view) {
-            clickListener.onItemClick(view, getAdapterPosition());
-        }
+
     }
 
-    public interface OnItemClickListener {
-        public void onItemClick(View view, int position);
-    }
 
-    public void SetOnItemClickListener(final OnItemClickListener itemClickListener) {
-        this.clickListener = itemClickListener;
-    }
 
 }
