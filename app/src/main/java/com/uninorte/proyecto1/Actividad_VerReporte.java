@@ -136,7 +136,7 @@ public class Actividad_VerReporte extends AppCompatActivity {
 
                                 }
                             }else{
-                                reporteLists.add(new Reporte(estudiante.getName(),0.0,estudiante.getId()));
+                                reporteLists.add(new Reporte(evaluacion.getName(),0.0,evaluacion.getId()));
                             }
 
                         }
