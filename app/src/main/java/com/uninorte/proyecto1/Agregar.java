@@ -180,9 +180,17 @@ public class Agregar extends AppCompatActivity {
                 Epeso.setText(String.valueOf(pesocatele));
             }
             if(getIntent().getStringExtra("title").equals("Evaluacion")){
-                int state = (int) getIntent().getLongExtra("Rub_id",0);
+                Rubrica state = Rubrica.findById(Rubrica.class, getIntent().getLongExtra("Rub_id",0));
+                int cont=0;
                 evaluar.setVisibility(View.VISIBLE);
-                selectRub.setSelection(state);
+                for(Rubrica item:Rubrica.listAll(Rubrica.class)){
+                    if (item.getId().equals(state.getId())){
+                        selectRub.setSelection(cont);
+                        break;
+                    }
+                    cont++;
+                }
+
 
             }
         }
@@ -260,7 +268,7 @@ public class Agregar extends AppCompatActivity {
                                         }
 
                                     }else{
-                                        int newRubricaPos = selectRub.getSelectedItemPosition();
+                                        Long newRubricaPos = RubricaSelEva.getId();
                                         if(Rubrica.count(Rubrica.class)==0){
                                             Toast.makeText(this,"Crear Rubricas",Toast.LENGTH_SHORT).show();
                                         }else{
@@ -382,10 +390,10 @@ public class Agregar extends AppCompatActivity {
         }
     }
 
-    public void EditorCreatorEva(String Name,int Rubricaid){
+    public void EditorCreatorEva(String Name,Long Rubricaid){
         if (!editing) {
             Log.d("Evaluacion", "saving");
-            Evaluacion evaluacion = new Evaluacion(Name,materiaestud, (long) Rubricaid);
+            Evaluacion evaluacion = new Evaluacion(Name,materiaestud, Rubricaid);
             evaluacion.save();
         } else {
             Log.d("Evaluacion", "updating");
@@ -396,7 +404,7 @@ public class Agregar extends AppCompatActivity {
                 Evaluacion evaluacion = evaluaciones.get(0);
                 Log.d("got evaluacion", "evaluacion: " + evaluacion.getName());
                 evaluacion.setName("" + Name);
-                evaluacion.setRubrica((long) Rubricaid);
+                evaluacion.setRubrica(Rubricaid);
                 evaluacion.save();
             }
         }

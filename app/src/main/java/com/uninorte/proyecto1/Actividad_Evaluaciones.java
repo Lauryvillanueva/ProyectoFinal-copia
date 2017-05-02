@@ -206,6 +206,7 @@ public class Actividad_Evaluaciones extends AppCompatActivity {
         i.putExtra("isEditing", true);
         i.putExtra("Mat_id",Matid);
         i.putExtra("Eva_name",evaluacionesList.get(position).getName());
+        i.putExtra("Rub_id",evaluacionesList.get(position).getRubrica());
         i.putExtra("title","Evaluacion");
 
         modifyPos = position;
