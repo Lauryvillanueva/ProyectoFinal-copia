@@ -1,9 +1,11 @@
 package com.uninorte.proyecto1;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.DataSetObserver;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,13 +32,16 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.ganfra.materialspinner.MaterialSpinner;
+
 public class Agregar extends AppCompatActivity {
 
     private EditText nombre,Epeso;
     private TextView title,estado,pesocat,tvSelectRub;
-    private Spinner stateEstud,selectRub;
+    private MaterialSpinner stateEstud,selectRub;
     boolean editing, viewing;
     private String name;
+    private int estadoEstud;
     private Button eNivel,eCateg,eDesc,evaluar;
 
     private Materia materiaestud;
@@ -65,8 +70,8 @@ public class Agregar extends AppCompatActivity {
         Epeso.setFilters(new InputFilter[]{new InputFilterMinMax("1", "100")});
 
         estado=(TextView) findViewById(R.id.textViewState);
-        stateEstud = (Spinner) findViewById(R.id.StateEstud);
-        selectRub=(Spinner) findViewById(R.id.selectRubrica);
+        stateEstud = (MaterialSpinner) findViewById(R.id.StateEstud);
+        selectRub=(MaterialSpinner) findViewById(R.id.selectRubrica);
 
         eNivel=(Button) findViewById(R.id.editNiv);
         eCateg=(Button) findViewById(R.id.editCat);
@@ -82,7 +87,12 @@ public class Agregar extends AppCompatActivity {
             selectRub.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    if (i!=-1){
                     RubricaSelEva = spinnerAdapterRub.getItem(i);
+                    }else{
+                        RubricaSelEva=null;
+                    }
+
                 }
 
                 @Override
@@ -184,14 +194,13 @@ public class Agregar extends AppCompatActivity {
                 int cont=0;
                 evaluar.setVisibility(View.VISIBLE);
                 for(Rubrica item:Rubrica.listAll(Rubrica.class)){
+                    cont++;
                     if (item.getId().equals(state.getId())){
                         selectRub.setSelection(cont);
                         break;
                     }
-                    cont++;
+
                 }
-
-
             }
         }
         if (viewing){
@@ -238,8 +247,12 @@ public class Agregar extends AppCompatActivity {
                 }else{
                     if (title.getText().toString().equals("Agregar Estudiante")) {
                         int newState = stateEstud.getSelectedItemPosition();
-                        EditorCreatorEstud(newName, newState);
-                        finish();
+                        if(newState!=0) {
+                            EditorCreatorEstud(newName, newState);
+                            finish();
+                        }else{
+                            stateEstud.setError("Seleccionar Estado");
+                        }
                     }else{
                         if (title.getText().toString().equals("Agregar Rubrica")) {
                             EditorCreatorRub(newName);
@@ -268,10 +281,10 @@ public class Agregar extends AppCompatActivity {
                                         }
 
                                     }else{
-                                        Long newRubricaPos = RubricaSelEva.getId();
-                                        if(Rubrica.count(Rubrica.class)==0){
-                                            Toast.makeText(this,"Crear Rubricas",Toast.LENGTH_SHORT).show();
+                                        if(Rubrica.count(Rubrica.class)==0 || RubricaSelEva==null){
+                                            Toast.makeText(this,"Crear o Seleccionar Rubrica",Toast.LENGTH_SHORT).show();
                                         }else{
+                                            Long newRubricaPos = RubricaSelEva.getId();
                                             EditorCreatorEva(newName, newRubricaPos);
                                             finish();
                                         }
@@ -479,13 +492,58 @@ public class Agregar extends AppCompatActivity {
         if(!editing && !viewing){
             Snackbar.make(layoutRoot, "Guardar Evaluacion Primero.", Snackbar.LENGTH_LONG).show();
         }else {
-            Intent i = new Intent(Agregar.this, Actividad_Evaluar.class);
-            i.putExtra("Rub_id", RubricaSelEva.getId());
-            i.putExtra("Mat_id",materiaestud.getId());
-            i.putExtra("Eva_id", Evaluacion.find(Evaluacion.class,"name = ?",getIntent().getStringExtra("Eva_name")).get(0).getId());
-            startActivity(i);
+            Evaluacion evalua= Evaluacion.find(Evaluacion.class,"name = ?",getIntent().getStringExtra("Eva_name")).get(0);
+            if(RubricaSelEva!=null) {
+                if (evalua.getRubrica().equals(RubricaSelEva.getId())) {
+                    Intent i = new Intent(Agregar.this, Actividad_Evaluar.class);
+                    i.putExtra("Rub_id", RubricaSelEva.getId());
+                    i.putExtra("Mat_id", materiaestud.getId());
+                    i.putExtra("Eva_id", Evaluacion.find(Evaluacion.class, "name = ?", getIntent().getStringExtra("Eva_name")).get(0).getId());
+                    startActivity(i);
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Agregar.this);
+                    builder.setTitle("Guardar")
+                            .setMessage("¿Desea guardar Rubrica antes de Evaluar?")
+                            .setPositiveButton("Si", dialogSave)
+                            .setNegativeButton("No", dialogSave).show();
+
+                }
+            }else{
+                Toast.makeText(this,"Crear o Seleccionar Rubrica",Toast.LENGTH_SHORT).show();
+            }
         }
 
 
     }
+
+    public DialogInterface.OnClickListener dialogSave = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialogInterface, int choice) {
+            switch(choice){
+                case DialogInterface.BUTTON_POSITIVE:
+                    String newName = nombre.getText().toString();
+                    if(Rubrica.count(Rubrica.class)!=0 || RubricaSelEva!=null){
+                        Long newRubricaPos = RubricaSelEva.getId();
+                        EditorCreatorEva(newName, newRubricaPos);
+                        Intent i = new Intent(Agregar.this, Actividad_Evaluar.class);
+                        i.putExtra("Rub_id", RubricaSelEva.getId());
+                        i.putExtra("Mat_id", materiaestud.getId());
+                        i.putExtra("Eva_id", Evaluacion.find(Evaluacion.class, "name = ?", getIntent().getStringExtra("Eva_name")).get(0).getId());
+                        startActivity(i);
+                    }else{
+                        Toast.makeText(Agregar.this, "No se Guardo el Registro", Toast.LENGTH_SHORT).show();
+                    }
+
+                    break;
+                case DialogInterface.BUTTON_NEGATIVE:
+                    Intent i = new Intent(Agregar.this, Actividad_Evaluar.class);
+                    i.putExtra("Rub_id", RubricaSelEva.getId());
+                    i.putExtra("Mat_id", materiaestud.getId());
+                    i.putExtra("Eva_id", Evaluacion.find(Evaluacion.class, "name = ?", getIntent().getStringExtra("Eva_name")).get(0).getId());
+                    startActivity(i);
+                    break;
+            }
+
+        }
+    };
 }
