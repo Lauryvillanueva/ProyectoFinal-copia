@@ -26,13 +26,20 @@ public class Actividad_VerReporte extends AppCompatActivity {
     private String title;
     private Long reporteId;
 
-    private List<NotaEstudElemento> notaEstudElementoList;
+
     private Evaluacion evaluacion;
+    private Estudiante estudiante;
     private Materia materia;
     private List<Estudiante> estudianteList;
+    private List<Evaluacion> evaluacionList;
+    private List<NotaEstudElemento> notaEstudElementoList;
+    private NotaEstudElemento notaEstudElemento;
 
-    private Rubrica rubrica;
-    private List<Categoria> categoriaList;
+    private Double nota;
+    private Elemento elemento;
+    private Categoria categoria;
+
+
 
     CoordinatorLayout layoutRoot;
 
@@ -57,17 +64,10 @@ public class Actividad_VerReporte extends AppCompatActivity {
             switch (title) {
                 case "Evaluacion":
                     evaluacion = Evaluacion.findById(Evaluacion.class, reporteId);
-                    Double nota;
-                    Elemento elemento;
-                    Categoria categoria;
-
                     materia = Materia.findById(Materia.class, evaluacion.getMateria());
                     estudianteList = materia.getEstudiantes();
 
                     if (!estudianteList.isEmpty()) {
-                        Estudiante estudiante;
-                        List<NotaEstudElemento> notaEstudElementoList;
-                        NotaEstudElemento notaEstudElemento;
                         for (Estudiante estudianteItem: estudianteList) {
                             estudiante = estudianteItem;
                             notaEstudElementoList=estudiante.getNotas(evaluacion.getId());
@@ -107,6 +107,50 @@ public class Actividad_VerReporte extends AppCompatActivity {
 
                     break;
                 case "Estudiante":
+                    estudiante=Estudiante.findById(Estudiante.class,reporteId);
+                    materia=Materia.findById(Materia.class,estudiante.getMateria());
+                    evaluacionList=materia.getEvaluaciones();
+
+                    if(!evaluacionList.isEmpty()){
+                        for(Evaluacion evaluacionItem: evaluacionList){
+                            evaluacion=evaluacionItem;
+                            notaEstudElementoList=estudiante.getNotas(evaluacion.getId());
+                            if(!notaEstudElementoList.isEmpty()) {
+                                for (NotaEstudElemento notaEstudElementoItem: notaEstudElementoList) {
+                                    notaEstudElemento=notaEstudElementoItem;
+                                    elemento=Elemento.findById(Elemento.class,notaEstudElemento.getElemento());
+                                    categoria=Categoria.findById(Categoria.class,elemento.getCategoria());
+                                    if(notaEstudElemento.getEvaluacion()==evaluacion.getId()){
+                                        nota=notaEstudElemento.getNota()*(elemento.getPeso()/100.0)*(categoria.getPeso()/100.0);
+                                        if(reporteLists.isEmpty()){
+                                            reporteLists.add(new Reporte(evaluacion.getName(),nota,evaluacion.getId()));
+                                        }else{
+                                            if(containsId(reporteLists,evaluacion.getId())==-1){
+                                                Log.d("ReporteView", "Nota: "+evaluacion.getName());
+                                                reporteLists.add(new Reporte(evaluacion.getName(),nota,evaluacion.getId()));
+                                            }else{
+                                                reporteLists.get(containsId(reporteLists,evaluacion.getId())).addNota(nota);
+                                            }
+                                        }
+                                    }
+
+                                }
+                            }else{
+                                reporteLists.add(new Reporte(estudiante.getName(),0.0,estudiante.getId()));
+                            }
+
+                        }
+
+                    }
+                    if(!reporteLists.isEmpty()) {
+                        customAdapterRep = new CustomAdapterRep(this, reporteLists);
+                        list.setAdapter(customAdapterRep);
+                        list.setLayoutManager(new LinearLayoutManager(this));
+                    }else{
+                        Snackbar.make(layoutRoot, "No hay Evaluaciones.", Snackbar.LENGTH_LONG).show();
+                    }
+
+
                     break;
             }
 
