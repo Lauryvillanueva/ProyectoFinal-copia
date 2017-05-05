@@ -13,6 +13,7 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -223,11 +224,31 @@ public class Agregar extends AppCompatActivity {
             }
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            action("Inicio");
+            Intent i = new Intent(Agregar.this,Home.class);
+            startActivity(i);
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void action(String resid) {
+        Toast.makeText(this, resid, Toast.LENGTH_SHORT).show();
+    }
+
 
 
     public void onClick_Guardar(View view) {

@@ -115,6 +115,13 @@ public class Actividad_AddDescriptions extends AppCompatActivity {
                 finish();
             }
         });
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     public void EditorCreatorEleNiv(Long Elemento,Long Nivel, String description,boolean credit){
