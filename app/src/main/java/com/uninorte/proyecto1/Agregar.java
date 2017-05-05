@@ -2,34 +2,25 @@ package com.uninorte.proyecto1;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.DataSetObserver;
+import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
 import android.text.InputType;
-import android.text.Layout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
@@ -38,10 +29,10 @@ public class Agregar extends AppCompatActivity {
 
     private EditText nombre,Epeso;
     private TextView title,estado,pesocat,tvSelectRub;
-    private MaterialSpinner stateEstud,selectRub;
+    private MaterialSpinner selectRub,stateEstud;
     boolean editing, viewing;
     private String name;
-    private int estadoEstud;
+
     private Button eNivel,eCateg,eDesc,evaluar;
 
     private Materia materiaestud;
@@ -78,12 +69,16 @@ public class Agregar extends AppCompatActivity {
         evaluar=(Button) findViewById(R.id.evaluar);
 
         String[] valores = {"Activo","Inactivo"};
-        stateEstud.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, valores));
+        ArrayAdapter<String> adapter =new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, valores);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        stateEstud.setAdapter(adapter);
 
-        if(Rubrica.count(Rubrica.class)>0) {
+
+
             spinnerAdapterRub = new SpinnerAdapterRub(this, android.R.layout.simple_spinner_item, Rubrica.listAll(Rubrica.class));
+            spinnerAdapterRub.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             selectRub.setAdapter(spinnerAdapterRub);
-
+        if(Rubrica.count(Rubrica.class)>0) {
             selectRub.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -101,8 +96,8 @@ public class Agregar extends AppCompatActivity {
                 }
             });
         }else{
-            String[] valor = {"Empty"};
-            selectRub.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, valor));
+            if(getIntent().getStringExtra("title").equals("Evaluacion"))
+                Snackbar.make(layoutRoot, "No hay Rubricas.", Snackbar.LENGTH_LONG).show();
         }
 
         title=(TextView) findViewById(R.id.title);
@@ -247,6 +242,7 @@ public class Agregar extends AppCompatActivity {
                 }else{
                     if (title.getText().toString().equals("Agregar Estudiante")) {
                         int newState = stateEstud.getSelectedItemPosition();
+                        Log.d("SelectEstate", "onClick_GuardarEstate: "+newState);
                         if(newState!=0) {
                             EditorCreatorEstud(newName, newState);
                             finish();
@@ -282,7 +278,7 @@ public class Agregar extends AppCompatActivity {
 
                                     }else{
                                         if(Rubrica.count(Rubrica.class)==0 || RubricaSelEva==null){
-                                            Toast.makeText(this,"Crear o Seleccionar Rubrica",Toast.LENGTH_SHORT).show();
+                                            selectRub.setError("Crear o Seleccionar Rubrica");
                                         }else{
                                             Long newRubricaPos = RubricaSelEva.getId();
                                             EditorCreatorEva(newName, newRubricaPos);

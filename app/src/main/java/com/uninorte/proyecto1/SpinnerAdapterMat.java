@@ -2,6 +2,7 @@ package com.uninorte.proyecto1;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -37,27 +38,26 @@ public class SpinnerAdapterMat extends ArrayAdapter<Materia> {
         return position;
     }
 
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
-        TextView label = new TextView(context);
-        label.setTextColor(Color.BLACK);
-
-        label.setText(materiaLists.get(position).getName());
+        TextView textView = (TextView) View.inflate(context, android.R.layout.simple_spinner_item, null);
+        textView.setText(materiaLists.get(position).getName());
+        return textView;
 
 
-        return label;
     }
 
 
     @Override
     public View getDropDownView(int position, View convertView,
                                 ViewGroup parent) {
-        TextView label = new TextView(context);
-        label.setTextColor(Color.BLACK);
-        label.setText(materiaLists.get(position).getName());
 
-        return label;
+        if (convertView == null) {
+            LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = vi.inflate(android.R.layout.simple_spinner_dropdown_item, parent, false);
+        }
+        ((TextView) convertView).setText(materiaLists.get(position).getName());
+        return convertView;
+
     }
 }

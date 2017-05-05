@@ -62,14 +62,13 @@
                         android:id="@+id/spinnerEstud"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
                         app:ms_baseColor="@color/colorPrimary"
-                        app:ms_enableErrorLabel="false"
+                        app:ms_enableErrorLabel="true"
+                        app:ms_errorColor="@color/error"
                         app:ms_enableFloatingLabel="false"
                         app:ms_hint="Seleccionar Estudiante"
-                        app:ms_hintColor="@android:color/black"
-
-                        app:ms_multiline="false" />
+                        app:ms_hintColor="@color/hint"
+                        app:ms_multiline="false"/>
 
                 </LinearLayout>
 
@@ -94,11 +93,13 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         app:ms_baseColor="@color/colorPrimary"
-                        app:ms_enableErrorLabel="false"
+                        app:ms_enableErrorLabel="true"
+                        app:ms_errorColor="@color/error"
                         app:ms_enableFloatingLabel="false"
                         app:ms_hint="Seleccionar Categoria"
-                        app:ms_hintColor="@android:color/black"
-                        app:ms_multiline="false" />
+                        app:ms_hintColor="@color/hint"
+                        app:ms_multiline="false"
+                        />
 
 
                 </LinearLayout>
@@ -124,11 +125,12 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         app:ms_baseColor="@color/colorPrimary"
-                        app:ms_enableErrorLabel="false"
+                        app:ms_enableErrorLabel="true"
+                        app:ms_errorColor="@color/error"
                         app:ms_enableFloatingLabel="false"
                         app:ms_hint="Seleccionar Elemento"
-                        app:ms_hintColor="@android:color/black"
-                        app:ms_multiline="false" />
+                        app:ms_hintColor="@color/hint"
+                        app:ms_multiline="false"/>
 
                 </LinearLayout>
 
