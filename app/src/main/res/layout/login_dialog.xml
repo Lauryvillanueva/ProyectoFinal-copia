@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='utf-8'?>
+<RelativeLayout
+    xmlns:android='http://schemas.android.com/apk/res/android'
+    android:layout_width='match_parent'
+    android:layout_height='wrap_content'
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation='vertical'
+   >
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="25dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.18"
+                android:tint="@color/White"
+                app:srcCompat="@android:drawable/ic_secure" />
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Ingresar"
+                android:textColor="@color/White"
+                android:textSize="20dp" />
+
+
+        </android.support.v7.widget.Toolbar>
+
+
+
+
+    </android.support.design.widget.AppBarLayout>
+
+    <!--  Email Label -->
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/login_input_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        >
+
+        <EditText
+            android:id="@+id/login_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:inputType="textCapWords"
+            android:maxLines="1"
+            />
+    </android.support.design.widget.TextInputLayout>
+
+    <!--  Password Label -->
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/login_input_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/login_input_email"
+        app:passwordToggleContentDescription="Description"
+        app:passwordToggleEnabled="true"
+        app:passwordToggleTint="@color/colorPrimary"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        >
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/login_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:maxLines="1" />
+    </android.support.design.widget.TextInputLayout>
+
+    <TextView
+        android:id="@+id/login_btn_forgot_password"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/login_input_password"
+        android:layout_below="@+id/login_input_password"
+        android:layout_gravity="right"
+        android:clickable="true"
+        android:text="Olvide contraseña"
+        android:textStyle="bold"
+        android:textSize="12dp"/>
+
+
+</RelativeLayout>

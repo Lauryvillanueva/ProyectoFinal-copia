@@ -10,25 +10,42 @@
 
     <Button
         android:id="@+id/iniciar"
-        android:layout_width="228dp"
-        android:layout_height="46dp"
-        android:layout_marginBottom="41dp"
+        android:layout_width="333dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="97dp"
 
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:onClick="onClick_Iniciar"
-        android:text="Iniciar"
+        android:text="Ingresar"
         android:theme="@style/AppTheme.ButtonWhite"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintHorizontal_bias="0.514"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         tools:layout_constraintBottom_creator="1"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_editor_absoluteX="80dp"
-        tools:layout_editor_absoluteY="480dp" />
+        tools:layout_constraintTop_creator="1" />
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="333dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="40dp"
+
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:onClick="onClick_Registrarse"
+        android:text="Registrarse"
+        android:theme="@style/AppTheme.ButtonWhite"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1" />
 
     <ImageView
         android:id="@+id/imageView2"
@@ -42,7 +59,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginBottom="72dp"
+        android:layout_marginBottom="67dp"
         app:layout_constraintBottom_toTopOf="@+id/imageView4" />
 
     <ImageView
@@ -60,7 +77,7 @@
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintHorizontal_bias="0.515"
-        android:layout_marginBottom="112dp"
+        android:layout_marginBottom="81dp"
         app:layout_constraintBottom_toTopOf="@+id/iniciar" />
 
 </android.support.constraint.ConstraintLayout>
