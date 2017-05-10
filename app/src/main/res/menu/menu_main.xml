@@ -7,7 +7,16 @@
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="Inicio"
-        app:showAsAction="collapseActionView" />
+        app:showAsAction="collapseActionView"
+        />
 
+    <item
+        android:id="@+id/exit"
+        app:showAsAction="never"
+        android:orderInCategory="200"
+        android:title="Cerrar Sesion"
+        >
+    </item>
 
 </menu>
+    <!--android:icon="@android:drawable/ic_menu_add"-->

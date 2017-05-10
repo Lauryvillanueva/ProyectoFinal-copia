@@ -36,6 +36,7 @@ public class Welcome extends AppCompatActivity {
         LayoutInflater li = LayoutInflater.from(this);
 
         View prompt = li.inflate(R.layout.login_dialog, null);
+
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         alertDialogBuilder.setView(prompt);
