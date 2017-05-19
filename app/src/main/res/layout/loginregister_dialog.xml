@@ -3,6 +3,7 @@
     xmlns:android='http://schemas.android.com/apk/res/android'
     android:layout_width='match_parent'
     android:layout_height='wrap_content'
+    android:id="@+id/loginregister_dialog"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation='vertical'
    >
@@ -48,9 +49,9 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <!--  Email Label -->
+    <!--  Username Label -->
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/login_input_email"
+        android:id="@+id/input_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="70dp"
@@ -59,7 +60,27 @@
         >
 
         <EditText
-            android:id="@+id/login_name"
+            android:id="@+id/login_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Username"
+            android:inputType="textCapWords"
+            android:maxLines="1"
+            />
+    </android.support.design.widget.TextInputLayout>
+
+    <!--  Email Label -->
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/input_username"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        >
+
+        <EditText
+            android:id="@+id/login_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Email"
@@ -70,10 +91,10 @@
 
     <!--  Password Label -->
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/login_input_password"
+        android:id="@+id/input_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/login_input_email"
+        android:layout_below="@+id/input_email"
         app:passwordToggleContentDescription="Description"
         app:passwordToggleEnabled="true"
         app:passwordToggleTint="@color/colorPrimary"
@@ -85,18 +106,39 @@
             android:id="@+id/login_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Password"
+            android:hint="Contraseña"
             android:inputType="textPassword"
             android:maxLines="1" />
     </android.support.design.widget.TextInputLayout>
+
+
+    <fr.ganfra.materialspinner.MaterialSpinner
+        android:id="@+id/spinnerRole"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_alignRight="@+id/input_password"
+        android:layout_below="@+id/input_password"
+        android:layout_gravity="right"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        app:ms_baseColor="@color/colorPrimary"
+        app:ms_enableErrorLabel="false"
+        app:ms_enableFloatingLabel="false"
+        app:ms_hint="Seleccionar Role"
+        app:ms_hintColor="@color/hint"
+        app:ms_multiline="false" />
+
+
+
 
     <TextView
         android:id="@+id/login_btn_forgot_password"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/login_input_password"
-        android:layout_below="@+id/login_input_password"
+        android:layout_alignRight="@+id/spinnerRole"
+        android:layout_below="@+id/spinnerRole"
         android:layout_gravity="right"
         android:clickable="true"
         android:text="Olvide contraseña"
