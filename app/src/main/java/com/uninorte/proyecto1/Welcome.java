@@ -174,7 +174,7 @@ public class Welcome extends AppCompatActivity {
                                             }
                                         }
                                         if(!valid){
-                                            Toast.makeText(Welcome.this,"Username no valido",Toast.LENGTH_SHORT);
+                                            Toast.makeText(Welcome.this,"Username no valido",Toast.LENGTH_SHORT).show();
                                         }else{
                                             dialog.dismiss();
                                         }
@@ -222,7 +222,7 @@ public class Welcome extends AppCompatActivity {
                                         });
 
                             }else{
-                                Toast.makeText(Welcome.this,"Hay Campos vacios",Toast.LENGTH_SHORT);
+                                Toast.makeText(Welcome.this,"Hay Campos Vacios",Toast.LENGTH_SHORT).show();
                             }
                         }
 
