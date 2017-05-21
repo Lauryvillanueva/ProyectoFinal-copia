@@ -34,8 +34,8 @@
                     android:orientation="horizontal"
                     android:weightSum="1">
 
-                    <EditText
-                        android:id="@+id/EditextNivel"
+                    <TextView
+                        android:id="@+id/TextViewNivel"
                         android:layout_width="80dp"
                         android:layout_height="match_parent"
                         android:layout_marginRight="20dp"
