@@ -221,7 +221,7 @@ public class Welcome extends AppCompatActivity {
                                             }
                                         });
 
-                            }else{
+                            }   else{
                                 Toast.makeText(Welcome.this,"Hay Campos Vacios",Toast.LENGTH_SHORT).show();
                             }
                         }

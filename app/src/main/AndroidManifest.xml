@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.uninorte.proyecto1"
+    package="com.uninorte.proyecto1">
 
-    >
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name="com.orm.SugarApp"
@@ -92,10 +91,14 @@
             android:name=".Actividad_SelectReporte"
             android:label=""
             android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity android:name=".Actividad_VerReporte"
+        <activity
+            android:name=".Actividad_VerReporte"
             android:label=""
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".VistaRubricas"
+            android:label=""
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest> <!-- android:theme="@android:style/Theme.Holo.Light.Dialog" -->
