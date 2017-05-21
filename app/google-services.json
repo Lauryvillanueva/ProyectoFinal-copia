@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "233337273968",
+    "firebase_url": "https://noterubric.firebaseio.com",
+    "project_id": "noterubric",
+    "storage_bucket": "noterubric.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:233337273968:android:288637e4379af046",
+        "android_client_info": {
+          "package_name": "com.uninorte.proyecto1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "233337273968-63rttfh2gq81d4eckt717cif8t9lcvrm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.uninorte.proyecto1",
+            "certificate_hash": "d9629da16ae8888d4b189e7c0d41fbe739aaaf35"
+          }
+        },
+        {
+          "client_id": "233337273968-ltiks8pv152rh0mb81jui1uaf8airqci.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtKEuxwI211RgN--Q4Gxyeq7wcu8BA0ms"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "233337273968-ltiks8pv152rh0mb81jui1uaf8airqci.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
