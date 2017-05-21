@@ -159,7 +159,7 @@ public class Welcome extends AppCompatActivity {
                                 performLogin(username.getText().toString(),password.getText().toString());
                                 dialog.dismiss();
                             }else{
-                                mDatabase=FirebaseDatabase.getInstance().getReference().child("noterubric").child("users");
+                                mDatabase=FirebaseDatabase.getInstance().getReference("noterubric").child("users");
                                 mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
