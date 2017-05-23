@@ -56,10 +56,8 @@ public class Welcome extends AppCompatActivity  {
     private Snackbar snackbar;
     private ConstraintLayout welcomeLayout;
     private DatabaseReference mDatabase;
-    private LinearLayout layout_or;
 
     //google
-    SignInButton loginbtn;
     private static final int RC_SIGN_IN = 0;
     private GoogleApiClient mGoogleApiClient;
 
@@ -228,7 +226,6 @@ public class Welcome extends AppCompatActivity  {
         //google-------------------------
         final LinearLayout linear_or = (LinearLayout) prompt.findViewById(R.id.login_layout_or);
         final SignInButton logingoogle = (SignInButton) prompt.findViewById(R.id.loginbtn);
-        //loginbtn = (SignInButton) findViewById(R.id.loginbtn);
         //--------------------------------------------------
 
         logingoogle.setOnClickListener(new View.OnClickListener() {
@@ -283,17 +280,6 @@ public class Welcome extends AppCompatActivity  {
         //-------------------------------------------------------
 
         AlertDialog alertDialog=alertDialogBuilder.create();
-
-       /* //google
-        loginbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                signIn();
-
-            }
-        });
-        //*/
 
 
         alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
@@ -423,18 +409,5 @@ public class Welcome extends AppCompatActivity  {
                 });
     }
 
-    public void onClick_IniciarGoogle(View view) {
-        signIn();
-    }
 
-
-   /* @Override
-    public void onClick(View view) {
-        if(view.getId() == R.id.login_btn_forgot_password)
-        {
-          //  startActivity(new Intent(Welcome.this,ForgotPassword.class));
-            finish();
-
-        }
-    }*/
 }

@@ -213,10 +213,8 @@ public class Actividad_Rubricas extends AppCompatActivity {
     }
     public void onClick_View(View view){
         int position = (int) view.getTag();
-        Intent i = new Intent(Actividad_Rubricas.this,Agregar.class);
-        i.putExtra("isViewing", true);
-        i.putExtra("Rub_name", rubricasList.get(position).getName());
-        i.putExtra("title","Rubrica");
+        Intent i = new Intent(Actividad_Rubricas.this,VistaRubricas.class);
+        i.putExtra("RubricaId", rubricasList.get(position).getId());
         startActivity(i);
     }
     public void onClick_Note(View view){
