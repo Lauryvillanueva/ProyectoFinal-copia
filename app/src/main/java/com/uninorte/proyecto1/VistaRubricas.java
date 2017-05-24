@@ -39,7 +39,7 @@ public class VistaRubricas extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         nivel=-1;
-
+        list= (RecyclerView) findViewById(R.id.ReciclerView);
         layoutRoot=(CoordinatorLayout) findViewById(R.id.root);
         title=(TextView)findViewById(R.id.toolbar_title);
 
@@ -64,11 +64,15 @@ public class VistaRubricas extends AppCompatActivity {
 
                             if(initialcount>=0){
                                 categoriaList=rubrica.getCategorias();
-                                customAdapterViewCat=new CustomAdapterViewCat(VistaRubricas.this,categoriaList,nivelList.get(i).getId());
-                                list.setAdapter(customAdapterViewCat);
-                                list.setLayoutManager(new LinearLayoutManager(VistaRubricas.this));
+
 
                                 if(!categoriaList.isEmpty()){
+                                    customAdapterViewCat=new CustomAdapterViewCat(VistaRubricas.this,categoriaList,nivelList.get(i).getId());
+                                    list.setVisibility(View.VISIBLE);
+                                    list.setAdapter(customAdapterViewCat);
+                                    list.setLayoutManager(new LinearLayoutManager(VistaRubricas.this));
+
+
                                     customAdapterViewCat.SetOnItemClickListener(new CustomAdapterViewCat.OnItemClickListener() {
                                         @Override
                                         public void onItemClick(View view, int position) {
@@ -82,6 +86,8 @@ public class VistaRubricas extends AppCompatActivity {
 
                             }
 
+                        }else{
+                            list.setVisibility(View.GONE);
                         }
                     }
 

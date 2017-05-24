@@ -3,6 +3,7 @@ package com.uninorte.proyecto1;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,16 +21,17 @@ public class CustomAdapterViewCat extends  RecyclerView.Adapter<CustomAdapterVie
     private List<Categoria> categoriaLists;
     private Context context;
     private Long nivel;
+    private static RecyclerView list;
 
     OnItemClickListener clickListener;
+
 
     public CustomAdapterViewCat(Context context,List<Categoria> categoriaLists, Long nivel) {
         this.categoriaLists = categoriaLists;
         this.context = context;
         this.nivel=nivel;
+
     }
-
-
 
     public Context getContext() {
         return context;
@@ -52,7 +54,6 @@ public class CustomAdapterViewCat extends  RecyclerView.Adapter<CustomAdapterVie
         Categoria categoriaList = categoriaLists.get(position);
         List<Elemento> elementoLists=categoriaList.getElementos();
         List<ElemenNivel> elemenNivelLists= new ArrayList<>();
-        CustomAdapterViewEleNiv customAdapterViewEleNiv;
         ViewHolder mViewHolderCat = viewHolder;
         mViewHolderCat.tvCatName.setText(categoriaList.getName());
         if(!elementoLists.isEmpty()){
@@ -67,11 +68,10 @@ public class CustomAdapterViewCat extends  RecyclerView.Adapter<CustomAdapterVie
                     }
                 }
             }
-            customAdapterViewEleNiv=new CustomAdapterViewEleNiv(context,elemenNivelLists);
-            mViewHolderCat.list.setAdapter(customAdapterViewEleNiv);
-            mViewHolderCat.list.setLayoutManager(new LinearLayoutManager(context));
 
         }
+        Log.d("Lista", "onBindViewHolder: "+elemenNivelLists.size());
+        mViewHolderCat.customAdapterViewEleNiv.setData(elemenNivelLists);
 
 
     }
@@ -92,13 +92,16 @@ public class CustomAdapterViewCat extends  RecyclerView.Adapter<CustomAdapterVie
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView tvCatName;
-        public RecyclerView list;
+        public CustomAdapterViewEleNiv customAdapterViewEleNiv;
 
 
         public ViewHolder(View itemView) {
             super(itemView);
-            tvCatName = (TextView) itemView.findViewById(R.id.textViewName);
+            tvCatName = (TextView) itemView.findViewById(R.id.TextViewNumCat);
             list=(RecyclerView) itemView.findViewById(R.id.ReciclerView);
+            list.setLayoutManager(new LinearLayoutManager(context));
+            customAdapterViewEleNiv=new CustomAdapterViewEleNiv();
+            list.setAdapter(customAdapterViewEleNiv);
             itemView.setOnClickListener(this);
         }
 

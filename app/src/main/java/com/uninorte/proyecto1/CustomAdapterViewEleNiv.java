@@ -28,6 +28,16 @@ public class CustomAdapterViewEleNiv extends  RecyclerView.Adapter<CustomAdapter
 
     }
 
+    public CustomAdapterViewEleNiv() {
+
+    }
+
+    public void setData(List<ElemenNivel> data) {
+        if (elemenNivelLists != data) {
+            elemenNivelLists = data;
+            notifyDataSetChanged();
+        }
+    }
 
 
     public Context getContext() {

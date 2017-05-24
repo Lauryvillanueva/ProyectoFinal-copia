@@ -24,7 +24,7 @@ public class CustomAdapterEleNiv extends  RecyclerView.Adapter<CustomAdapterEleN
 
     OnItemClickListener clickListener;
 
-    public CustomAdapterEleNiv(Context context,List<Nivel> nivelLists,boolean selector,Long elementoid) {
+     public CustomAdapterEleNiv(Context context, List<Nivel> nivelLists, boolean selector, Long elementoid) {
         this.nivelLists = nivelLists;
         this.context = context;
         this.selector=selector;
