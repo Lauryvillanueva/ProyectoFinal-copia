@@ -218,7 +218,7 @@ public class Welcome extends AppCompatActivity  {
 
         alertDialogBuilder.setView(prompt);
         final TextInputLayout usernameWrapper = (TextInputLayout) prompt.findViewById(R.id.input_username);
-        final TextView forgotpswd=(TextView) prompt.findViewById(R.id.login_btn_forgot_password);
+
         final EditText username = (EditText) prompt.findViewById(R.id.login_username);
         final EditText email = (EditText) prompt.findViewById(R.id.login_email);
         final EditText password = (EditText) prompt.findViewById(R.id.login_password);
@@ -266,7 +266,7 @@ public class Welcome extends AppCompatActivity  {
             title.setText("Ingresar");
         }else{
 
-            forgotpswd.setVisibility(View.GONE);
+
             linear_or.setVisibility(View.GONE);
             logingoogle.setVisibility(View.GONE);
             title.setText("Registro");

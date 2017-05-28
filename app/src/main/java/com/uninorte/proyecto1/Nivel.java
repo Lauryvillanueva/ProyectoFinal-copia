@@ -10,6 +10,7 @@ import com.orm.dsl.Unique;
 public class Nivel extends SugarRecord {
     @Unique
     private String name;
+    private String id;
 
     private Long rubrica;
 
@@ -17,6 +18,16 @@ public class Nivel extends SugarRecord {
         this.name = name;
         this.rubrica = rubrica.getId();
     }
+
+    @Override
+    public Long getId() {
+        return Long.valueOf(id);
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
 
     public Nivel() {    }
 

@@ -17,11 +17,13 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Actividad_Niveles extends AppCompatActivity {
-
+    private FirebaseAuth auth;
     private RecyclerView list;
     private List<Nivel> nivelesList = new ArrayList<>();
     private CustomAdapterNivel customAdapterNivel;
@@ -43,6 +45,8 @@ public class Actividad_Niveles extends AppCompatActivity {
 
         title=(TextView) findViewById(R.id.toolbar_title);
         title.setText("Niveles");
+
+        auth=FirebaseAuth.getInstance();
 
         layoutRoot=(CoordinatorLayout) findViewById(R.id.root);
 
@@ -195,6 +199,8 @@ public class Actividad_Niveles extends AppCompatActivity {
             Intent i = new Intent(Actividad_Niveles.this,Home.class);
             startActivity(i);
 
+        }if (id == R.id.exit) {
+            logoutUser();
         }
 
         return super.onOptionsItemSelected(item);
@@ -229,6 +235,13 @@ public class Actividad_Niveles extends AppCompatActivity {
     private void action(String resid) {
         Toast.makeText(this, resid, Toast.LENGTH_SHORT).show();
     }
-
+    public void logoutUser() {
+        auth.signOut();
+        if(auth.getCurrentUser() == null)
+        {
+            startActivity(new Intent(Actividad_Niveles.this,Welcome.class));
+            finish();
+        }
+    }
 
 }

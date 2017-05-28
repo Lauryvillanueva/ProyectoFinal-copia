@@ -16,12 +16,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class Actividad_Materias extends AppCompatActivity {
-
+  private FirebaseAuth auth;
     private RecyclerView list;
     private List<Materia> materiasList = new ArrayList<>();
     private CustomAdapterMat customAdapterMat;
@@ -38,6 +40,8 @@ public class Actividad_Materias extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         layoutRoot=(CoordinatorLayout) findViewById(R.id.root);
+
+        auth=FirebaseAuth.getInstance();
 
         initialCount= Materia.count(Materia.class);
         Log.d("create", "onCreate initialcountMat: "+initialCount);
@@ -193,7 +197,8 @@ public class Actividad_Materias extends AppCompatActivity {
             action("Inicio");
             Intent i = new Intent(Actividad_Materias.this,Home.class);
             startActivity(i);
-
+        } if (id == R.id.exit) {
+             logoutUser();
         }
 
         return super.onOptionsItemSelected(item);
@@ -228,6 +233,15 @@ public class Actividad_Materias extends AppCompatActivity {
     }
     private void action(String resid) {
         Toast.makeText(this, resid, Toast.LENGTH_SHORT).show();
+    }
+
+    public void logoutUser() {
+        auth.signOut();
+        if(auth.getCurrentUser() == null)
+        {
+            startActivity(new Intent(Actividad_Materias.this,Welcome.class));
+            finish();
+        }
     }
 
 }

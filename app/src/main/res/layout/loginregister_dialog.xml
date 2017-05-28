@@ -132,24 +132,14 @@
 
 
 
-    <TextView
-        android:id="@+id/login_btn_forgot_password"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/spinnerRole"
-        android:layout_below="@+id/spinnerRole"
-        android:layout_gravity="right"
-        android:clickable="true"
-        android:text="Olvide contraseña"
-        android:textStyle="bold"
-        android:textSize="12dp"/>
+
+
 
     <LinearLayout
         android:id="@+id/login_layout_or"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/login_btn_forgot_password"
+        android:layout_below="@+id/input_password"
         android:gravity="center"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"

@@ -14,6 +14,7 @@ public class Elemento extends SugarRecord {
     private String name;
     private int peso;
     private Long categoria;
+    private String id;
 
     public Elemento(String name, int peso, Categoria categoria) {
         this.name = name;
@@ -22,6 +23,15 @@ public class Elemento extends SugarRecord {
     }
 
     public Elemento() {
+    }
+
+    @Override
+    public Long getId() {
+        return Long.valueOf(id);
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {

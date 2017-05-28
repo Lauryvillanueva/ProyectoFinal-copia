@@ -15,12 +15,22 @@ import java.util.List;
 public class Materia extends SugarRecord implements Serializable{
     @Unique
     private String name;
+    private String id;
 
     public Materia(String namemat) {
         name = namemat;
     }
 
     public Materia(){}
+
+    @Override
+    public Long getId() {
+        return Long.valueOf(id);
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public List<Estudiante> getEstudiantes(){
         return Estudiante.find(Estudiante.class,"materia = ?",""+this.getId());

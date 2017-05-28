@@ -15,8 +15,18 @@ public class Categoria extends SugarRecord {
 
     private int peso;
     private Long rubrica;
+    private String id;
 
-    public Categoria(String name, int peso,Rubrica rubrica) {
+    @Override
+    public Long getId() {
+        return Long.valueOf(id);
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Categoria(String name, int peso, Rubrica rubrica) {
         this.name = name;
         this.peso=peso;
         this.rubrica = rubrica.getId();

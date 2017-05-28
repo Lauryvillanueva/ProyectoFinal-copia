@@ -87,6 +87,16 @@
                 android:theme="@style/AppTheme.ButtonBlue"
                 android:text="@string/reportes" />
 
+            <Button
+                android:id="@+id/exit"
+                android:layout_width="318dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="5dp"
+                android:onClick="onClick_salir"
+                android:theme="@style/AppTheme.ButtonBlue"
+                android:text="Cerrar Sesión" />
+
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

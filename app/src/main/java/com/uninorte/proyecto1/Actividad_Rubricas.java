@@ -17,11 +17,13 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Actividad_Rubricas extends AppCompatActivity {
-
+    private FirebaseAuth auth;
     private RecyclerView list;
     private List<Rubrica> rubricasList = new ArrayList<>();
     private CustomAdapterRub customAdapterRub;
@@ -35,6 +37,8 @@ public class Actividad_Rubricas extends AppCompatActivity {
         setContentView(R.layout.activity_rubricas);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        auth=FirebaseAuth.getInstance();
 
 
         layoutRoot=(CoordinatorLayout) findViewById(R.id.root);
@@ -192,6 +196,8 @@ public class Actividad_Rubricas extends AppCompatActivity {
             Intent i = new Intent(Actividad_Rubricas.this,Home.class);
             startActivityForResult(i,1);
             return true;
+        }if (id == R.id.exit) {
+            logoutUser();
         }
 
         return super.onOptionsItemSelected(item);
@@ -222,6 +228,14 @@ public class Actividad_Rubricas extends AppCompatActivity {
     }
     private void action(String resid) {
         Toast.makeText(this, resid, Toast.LENGTH_SHORT).show();
+    }
+    public void logoutUser() {
+        auth.signOut();
+        if(auth.getCurrentUser() == null)
+        {
+            startActivity(new Intent(Actividad_Rubricas.this,Welcome.class));
+            finish();
+        }
     }
 
 

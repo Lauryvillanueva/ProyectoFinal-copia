@@ -12,11 +12,21 @@ public class Evaluacion extends SugarRecord {
     private String name;
     private Long materia;
     private Long rubrica;
+    private String id;
 
     public Evaluacion(String name, Materia materia, Long rubrica) {
         this.name = name;
         this.materia = materia.getId();
         this.rubrica = rubrica;
+    }
+
+    @Override
+    public Long getId() {
+        return Long.valueOf(id);
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public Evaluacion() {

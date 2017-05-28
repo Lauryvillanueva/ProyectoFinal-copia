@@ -12,6 +12,16 @@ public class Estudiante extends SugarRecord {
     private String name ;
     private Long materia;
     int state;
+    private String id;
+
+    @Override
+    public Long getId() {
+        return Long.valueOf(id);
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public Estudiante(String namestud, int statestud, Materia mat) {
         name = namestud;

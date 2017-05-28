@@ -8,12 +8,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class Actividad_Reportes extends AppCompatActivity {
+    private FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reportes);
+
+        auth=FirebaseAuth.getInstance();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -44,6 +49,8 @@ public class Actividad_Reportes extends AppCompatActivity {
             Intent i = new Intent(Actividad_Reportes.this,Home.class);
             startActivityForResult(i,1);
             return true;
+        }if (id == R.id.exit) {
+            logoutUser();
         }
 
         return super.onOptionsItemSelected(item);
@@ -70,5 +77,13 @@ public class Actividad_Reportes extends AppCompatActivity {
         i.putExtra("Reporte","Estudiante");
         startActivity(i);
 
+    }
+    public void logoutUser() {
+        auth.signOut();
+        if(auth.getCurrentUser() == null)
+        {
+            startActivity(new Intent(Actividad_Reportes.this,Welcome.class));
+            finish();
+        }
     }
 }
