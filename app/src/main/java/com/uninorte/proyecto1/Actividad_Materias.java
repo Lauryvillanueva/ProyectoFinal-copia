@@ -194,7 +194,7 @@ public class Actividad_Materias extends AppCompatActivity {
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                long newCount = dataSnapshot.getChildrenCount();
+                final long newCount = dataSnapshot.getChildrenCount();
                 if (newCount > initialCount) {
 
                     Log.d("Main", "Adding new materia");
@@ -202,12 +202,16 @@ public class Actividad_Materias extends AppCompatActivity {
 
                     // Materia materia = Materia.last(Materia.class);
 
-                    Query lastQuery= mDatabase.orderByKey().limitToLast(1);
+                    Query lastQuery= mDatabase.limitToLast(1);
                     lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             Materia materia= dataSnapshot.getValue(Materia.class);
                             materiasList.add(materia);
+
+                            customAdapterMat.notifyItemInserted((int) newCount);
+
+                            initialCount = newCount;
 
                         }
 
@@ -216,12 +220,22 @@ public class Actividad_Materias extends AppCompatActivity {
 
                         }
                     });
-                    customAdapterMat.notifyItemInserted((int) newCount);
 
-                    initialCount = newCount;
 
 
                 }
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
                 if (modifyPos != -1) {
                     int cont=0;
                     for (DataSnapshot snap: dataSnapshot.getChildren()){
@@ -243,6 +257,7 @@ public class Actividad_Materias extends AppCompatActivity {
 
             }
         });
+
 
 
     }
