@@ -13,6 +13,12 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.List;
 public class CustomAdapterViewEleNiv extends  RecyclerView.Adapter<CustomAdapterViewEleNiv.ViewHolder>{
     private List<ElemenNivel> elemenNivelLists;
@@ -57,13 +63,28 @@ public class CustomAdapterViewEleNiv extends  RecyclerView.Adapter<CustomAdapter
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        ElemenNivel elemenNivelList = elemenNivelLists.get(position);
-        ViewHolder mViewHolderEleNiv = viewHolder;
+    public void onBindViewHolder(final ViewHolder viewHolder, int position) {
+        final ElemenNivel elemenNivelList = elemenNivelLists.get(position);
+
         //Name
-        Elemento elemento=Elemento.findById(Elemento.class,elemenNivelList.getElemento());
-        mViewHolderEleNiv.tvNivName.setText(elemento.getName());
-        mViewHolderEleNiv.tvDesc.setText(elemenNivelList.getDescription());
+        //final Elemento elemento=Elemento.findById(Elemento.class,elemenNivelList.getElemento());
+        DatabaseReference mDatabaseReference= FirebaseDatabase.getInstance().getReference("noterubric").child(elemenNivelList.getElemento());
+        mDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Elemento elemento=dataSnapshot.getValue(Elemento.class);
+                ViewHolder mViewHolderEleNiv = viewHolder;
+                mViewHolderEleNiv.tvNivName.setText(elemento.getName());
+                mViewHolderEleNiv.tvDesc.setText(elemenNivelList.getDescription());
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
 
     }
 

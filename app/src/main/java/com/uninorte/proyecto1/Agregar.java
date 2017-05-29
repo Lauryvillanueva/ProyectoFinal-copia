@@ -88,27 +88,41 @@ public class Agregar extends AppCompatActivity {
             spinnerAdapterRub.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             selectRub.setAdapter(spinnerAdapterRub);
         //if(Rubrica.count(Rubrica.class)>0) {
-        if(new Counts().countClass(titulo)>0) {
-            selectRub.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    if (i!=-1){
-                    RubricaSelEva = spinnerAdapterRub.getItem(i);
-                    }else{
-                        RubricaSelEva=null;
-                    }
+        mDatabase=FirebaseDatabase.getInstance().getReference("noterubric").child("Rubrica");
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int cont=Integer.parseInt(String.valueOf(dataSnapshot.getChildrenCount()));
+                if(cont>0) {
+                    selectRub.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            if (i!=-1){
+                                RubricaSelEva = spinnerAdapterRub.getItem(i);
+                            }else{
+                                RubricaSelEva=null;
+                            }
 
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+
+                        }
+                    });
+                }else{
+                    if(getIntent().getStringExtra("title").equals("Evaluacion"))
+                        Snackbar.make(layoutRoot, "No hay Rubricas.", Snackbar.LENGTH_LONG).show();
                 }
 
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
+            }
 
-                }
-            });
-        }else{
-            if(getIntent().getStringExtra("title").equals("Evaluacion"))
-                Snackbar.make(layoutRoot, "No hay Rubricas.", Snackbar.LENGTH_LONG).show();
-        }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
 
         title=(TextView) findViewById(R.id.title);
 
@@ -293,18 +307,31 @@ public class Agregar extends AppCompatActivity {
                 mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        Rubrica state;
+                        final Rubrica state;
                         state=dataSnapshot.getValue(Rubrica.class);
-                        int cont=0;
+
                         evaluar.setVisibility(View.VISIBLE);
-                        for(Rubrica item:Rubrica.listAll(Rubrica.class)){
-                            cont++;
-                            if (item.getId().equals(state.getId())){
-                                selectRub.setSelection(cont);
-                                break;
+                        DatabaseReference mDatabase2=FirebaseDatabase.getInstance().getReference("noterubric").child("Rubrica");
+                        mDatabase2.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                int cont=0;
+                                for(DataSnapshot snap:dataSnapshot.getChildren()){
+                                    Rubrica item=snap.getValue(Rubrica.class);
+                                    cont++;
+                                    if (item.getKey().equals(state.getKey())){
+                                        selectRub.setSelection(cont);
+                                        break;
+                                    }
+                                }
                             }
 
-                        }
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
 
                     }
 
@@ -373,7 +400,7 @@ public class Agregar extends AppCompatActivity {
             if (TextUtils.isEmpty(nombre.getText().toString())) {
                 nombre.setError("No Puede Estar Vacio");
             } else {
-                String newName = nombre.getText().toString();
+                final String newName = nombre.getText().toString();
                 if (title.getText().toString().equals("Agregar Materia")){
                     EditorCreatorMat(newName);
                     finish();
@@ -416,13 +443,26 @@ public class Agregar extends AppCompatActivity {
 
                                     }else{
                                         //if(Rubrica.count(Rubrica.class)==0 || RubricaSelEva==null){
-                                        if(new Counts().countClass("Rubricas")==0 || RubricaSelEva==null){
-                                            selectRub.setError("Crear o Seleccionar Rubrica");
-                                        }else{
-                                            Long newRubricaPos = RubricaSelEva.getId();
-                                            EditorCreatorEva(newName, newRubricaPos);
-                                            finish();
-                                        }
+                                        mDatabase=FirebaseDatabase.getInstance().getReference("noterubric").child("Rubrica");
+                                        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                int cont=Integer.parseInt(String.valueOf(dataSnapshot.getChildrenCount()));
+                                                if(cont==0 || RubricaSelEva==null){
+                                                    selectRub.setError("Crear o Seleccionar Rubrica");
+                                                }else{
+                                                    String newRubricaPos = RubricaSelEva.getKey();
+                                                    EditorCreatorEva(newName, newRubricaPos);
+                                                    finish();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+
+                                            }
+                                        });
+
                                     }
 
                                 }
@@ -446,8 +486,8 @@ public class Agregar extends AppCompatActivity {
             Materia materia = new Materia("" + Name);
             //materia.save();
             String materiaid = mDatabasetitle.push().getKey();
-            materia.setId(materiaid);
-            mDatabase.child(materiaid).setValue(materia);
+            materia.setKey(materiaid);
+            mDatabasetitle.child(materiaid).setValue(materia);
         } else {
             Log.d("Materia", "updating");
 
@@ -459,8 +499,8 @@ public class Agregar extends AppCompatActivity {
                         Materia materia= snap.getValue(Materia.class);
                         if(materia.getName().equals(name)){
                             Materia newmateria= new Materia(Name);
-                            newmateria.setId(materia.getId());
-                            mDatabasetitle.child(String.valueOf(materia.getId())).setValue(newmateria);
+                            newmateria.setKey(String.valueOf(materia.getKey()));
+                            mDatabasetitle.child(materia.getKey()).setValue(newmateria);
                             break;
                         }
                     }
@@ -488,8 +528,8 @@ public class Agregar extends AppCompatActivity {
             Rubrica rubrica = new Rubrica("" + Name);
             //rubrica.save();
             String rubricaid = mDatabasetitle.push().getKey();
-            rubrica.setId(rubricaid);
-            mDatabase.child(rubricaid).setValue(rubrica);
+            rubrica.setKey(rubricaid);
+            mDatabasetitle.child(rubricaid).setValue(rubrica);
         } else {
             Log.d("Rubrica", "updating");
 
@@ -501,8 +541,8 @@ public class Agregar extends AppCompatActivity {
                         Rubrica rubrica= snap.getValue(Rubrica.class);
                         if(rubrica.getName().equals(name)){
                             Rubrica newrubrica= new Rubrica(Name);
-                            newrubrica.setId(rubrica.getId());
-                            mDatabasetitle.child(String.valueOf(rubrica.getId())).setValue(newrubrica);
+                            newrubrica.setKey(String.valueOf(rubrica.getKey()));
+                            mDatabasetitle.child(rubrica.getKey()).setValue(newrubrica);
                             break;
                         }
                     }
@@ -530,8 +570,8 @@ public class Agregar extends AppCompatActivity {
             Nivel nivel = new Nivel("" + Name,rubricaSel);
             //nivel.save();
             String nivelid = mDatabasetitle.push().getKey();
-            nivel.setId(nivelid);
-            mDatabase.child(nivelid).setValue(nivel);
+            nivel.setKey(nivelid);
+            mDatabasetitle.child(nivelid).setValue(nivel);
 
         } else {
             Log.d("Nivel", "updating");
@@ -542,10 +582,10 @@ public class Agregar extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot snap: dataSnapshot.getChildren()) {
                         Nivel nivel= snap.getValue(Nivel.class);
-                        if(nivel.getName().equals(name) && nivel.getRubrica().equals(rubricaSel.getId().toString())){
+                        if(nivel.getName().equals(name) && nivel.getRubrica().equals(rubricaSel.getKey())){
                             Nivel newnivel= new Nivel(Name,rubricaSel);
-                            newnivel.setId(nivel.getId());
-                            mDatabasetitle.child(String.valueOf(nivel.getId())).setValue(newnivel);
+                            newnivel.setKey(String.valueOf(nivel.getKey()));
+                            mDatabasetitle.child(nivel.getKey()).setValue(newnivel);
                             break;
                         }
                     }
@@ -573,8 +613,8 @@ public class Agregar extends AppCompatActivity {
             Categoria categoria = new Categoria("" + Name,peso,rubricaSel);
             //categoria.save();
             String categoriaid = mDatabasetitle.push().getKey();
-            categoria.setId(categoriaid);
-            mDatabase.child(categoriaid).setValue(categoria);
+            categoria.setKey(categoriaid);
+            mDatabasetitle.child(categoriaid).setValue(categoria);
         } else {
             Log.d("Categoria", "updating");
 
@@ -585,10 +625,10 @@ public class Agregar extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot snap: dataSnapshot.getChildren()) {
                         Categoria categoria= snap.getValue(Categoria.class);
-                        if(categoria.getName().equals(name) && categoria.getRubrica().equals(rubricaSel.getId().toString())){
+                        if(categoria.getName().equals(name) && categoria.getRubrica().equals(rubricaSel.getKey())){
                             Categoria newcat= new Categoria(Name,peso,rubricaSel);
-                            newcat.setId(categoria.getId());
-                            mDatabasetitle.child(String.valueOf(categoria.getId())).setValue(newcat);
+                            newcat.setKey(String.valueOf(categoria.getKey()));
+                            mDatabasetitle.child(categoria.getKey()).setValue(newcat);
                             break;
                         }
                     }
@@ -617,8 +657,8 @@ public class Agregar extends AppCompatActivity {
             Elemento elemento = new Elemento("" + Name,peso,categoriaEle);
             //elemento.save();
             String elementoid = mDatabasetitle.push().getKey();
-            elemento.setId(elementoid);
-            mDatabase.child(elementoid).setValue(elemento);
+            elemento.setKey(elementoid);
+            mDatabasetitle.child(elementoid).setValue(elemento);
         } else {
             Log.d("Elemento", "updating");
 
@@ -628,10 +668,10 @@ public class Agregar extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot snap: dataSnapshot.getChildren()) {
                         Elemento elemento= snap.getValue(Elemento.class);
-                        if(elemento.getName().equals(name) && elemento.getCategoria().equals(categoriaEle.getId().toString())){
+                        if(elemento.getName().equals(name) && elemento.getCategoria().equals(categoriaEle.getKey())){
                             Elemento newelem= new Elemento(Name,peso,categoriaEle);
-                            newelem.setId(elemento.getId());
-                            mDatabasetitle.child(String.valueOf(elemento.getId())).setValue(newelem);
+                            newelem.setKey(String.valueOf(elemento.getKey()));
+                            mDatabasetitle.child(elemento.getKey()).setValue(newelem);
                             break;
                         }
                     }
@@ -655,14 +695,14 @@ public class Agregar extends AppCompatActivity {
         }
     }
 
-    public void EditorCreatorEva(final String Name, final Long Rubricaid){
+    public void EditorCreatorEva(final String Name, final String Rubricaid){
         if (!editing) {
             Log.d("Evaluacion", "saving");
             Evaluacion evaluacion = new Evaluacion(Name,materiaestud, Rubricaid);
            // evaluacion.save();
             String evaluacionid = mDatabasetitle.push().getKey();
-            evaluacion.setId(evaluacionid);
-            mDatabase.child(evaluacionid).setValue(evaluacion);
+            evaluacion.setKey(evaluacionid);
+            mDatabasetitle.child(evaluacionid).setValue(evaluacion);
         } else {
             Log.d("Evaluacion", "updating");
 
@@ -673,10 +713,10 @@ public class Agregar extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot snap: dataSnapshot.getChildren()) {
                         Evaluacion evaluacion= snap.getValue(Evaluacion.class);
-                        if(evaluacion.getName().equals(name) && evaluacion.getMateria().equals(materiaestud.getId().toString())){
+                        if(evaluacion.getName().equals(name) && evaluacion.getMateria().equals(materiaestud.getKey())){
                             Evaluacion neweval= new Evaluacion(Name,materiaestud,Rubricaid);
-                            neweval.setId(evaluacion.getId());
-                            mDatabasetitle.child(String.valueOf(evaluacion.getId())).setValue(neweval);
+                            neweval.setKey(String.valueOf(evaluacion.getKey()));
+                            mDatabasetitle.child(evaluacion.getKey()).setValue(neweval);
                             break;
                         }
                     }
@@ -706,8 +746,8 @@ public class Agregar extends AppCompatActivity {
             Estudiante estudiante = new Estudiante(Name,State,materiaestud);
             //estudiante.save();
             String estudid = mDatabasetitle.push().getKey();
-            estudiante.setId(estudid);
-            mDatabase.child(estudid).setValue(estudiante);
+            estudiante.setKey(estudid);
+            mDatabasetitle.child(estudid).setValue(estudiante);
         } else {
             Log.d("Estudiante", "updating");
 
@@ -717,10 +757,10 @@ public class Agregar extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot snap: dataSnapshot.getChildren()) {
                         Estudiante estudiante= snap.getValue(Estudiante.class);
-                        if(estudiante.getName().equals(name) && estudiante.getMateria().equals(materiaestud.getId().toString())){
+                        if(estudiante.getName().equals(name) && estudiante.getMateria().equals(materiaestud.getKey())){
                             Estudiante newest= new Estudiante(Name,State,materiaestud);
-                            newest.setId(estudiante.getId());
-                            mDatabasetitle.child(String.valueOf(estudiante.getId())).setValue(newest);
+                            newest.setKey(String.valueOf(estudiante.getKey()));
+                            mDatabasetitle.child(estudiante.getKey()).setValue(newest);
                             break;
                         }
                     }
@@ -828,9 +868,9 @@ public class Agregar extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot snap: dataSnapshot.getChildren()) {
                         Elemento elemento= snap.getValue(Elemento.class);
-                        if(elemento.getName().equals(name)&& elemento.getCategoria().equals(categoriaEle.getId().toString())){
+                        if(elemento.getName().equals(name)&& elemento.getCategoria().equals(categoriaEle.getKey().toString())){
                             Intent i = new Intent(Agregar.this, Actividad_AddDescriptions.class);
-                            i.putExtra("Ele_id", elemento.getId());
+                            i.putExtra("Ele_id", elemento.getKey());
                             startActivity(i);
                             break;
                         }
@@ -853,31 +893,49 @@ public class Agregar extends AppCompatActivity {
         }
     }
 
-    //VOY POR ACAAAAAA--------------------------------------------------------------------------------------
+
     public void onClick_Evaluar(View view) {
         if(!editing && !viewing){
             Snackbar.make(layoutRoot, "Guardar Evaluacion Primero.", Snackbar.LENGTH_LONG).show();
         }else {
-            Evaluacion evalua= Evaluacion.find(Evaluacion.class,"name = ?",getIntent().getStringExtra("Eva_name")).get(0);
+           //Evaluacion evalua= Evaluacion.find(Evaluacion.class,"name = ?",getIntent().getStringExtra("Eva_name")).get(0);
+            mDatabase=FirebaseDatabase.getInstance().getReference("noterubric").child("Evaluacion");
+            mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snap:dataSnapshot.getChildren()){
+                        if(snap.getValue(Evaluacion.class).getName().equals(getIntent().getStringExtra("Eva_name"))){
+                            Evaluacion evalua=snap.getValue(Evaluacion.class);
+                            if(RubricaSelEva!=null) {
+                                if (evalua.getRubrica().equals(RubricaSelEva.getId())) {
+                                    Intent i = new Intent(Agregar.this, Actividad_Evaluar.class);
+                                    i.putExtra("Rub_id", RubricaSelEva.getId());
+                                    i.putExtra("Mat_id", materiaestud.getId());
+                                    i.putExtra("Eva_id", Evaluacion.find(Evaluacion.class, "name = ?", getIntent().getStringExtra("Eva_name")).get(0).getId());
+                                    startActivity(i);
+                                } else {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(Agregar.this);
+                                    builder.setTitle("Guardar")
+                                            .setMessage("¿Desea guardar Rubrica antes de Evaluar?")
+                                            .setPositiveButton("Si", dialogSave)
+                                            .setNegativeButton("No", dialogSave).show();
 
-            if(RubricaSelEva!=null) {
-                if (evalua.getRubrica().equals(RubricaSelEva.getId())) {
-                    Intent i = new Intent(Agregar.this, Actividad_Evaluar.class);
-                    i.putExtra("Rub_id", RubricaSelEva.getId());
-                    i.putExtra("Mat_id", materiaestud.getId());
-                    i.putExtra("Eva_id", Evaluacion.find(Evaluacion.class, "name = ?", getIntent().getStringExtra("Eva_name")).get(0).getId());
-                    startActivity(i);
-                } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Agregar.this);
-                    builder.setTitle("Guardar")
-                            .setMessage("¿Desea guardar Rubrica antes de Evaluar?")
-                            .setPositiveButton("Si", dialogSave)
-                            .setNegativeButton("No", dialogSave).show();
+                                }
+                            }else{
+                                Toast.makeText(Agregar.this,"Crear o Seleccionar Rubrica",Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
                 }
-            }else{
-                Toast.makeText(this,"Crear o Seleccionar Rubrica",Toast.LENGTH_SHORT).show();
-            }
+            });
+
+
         }
 
 
@@ -888,19 +946,32 @@ public class Agregar extends AppCompatActivity {
         public void onClick(DialogInterface dialogInterface, int choice) {
             switch(choice){
                 case DialogInterface.BUTTON_POSITIVE:
-                    String newName = nombre.getText().toString();
+                    final String newName = nombre.getText().toString();
                     //if(Rubrica.count(Rubrica.class)!=0 || RubricaSelEva!=null){
-                    if(new Counts().countClass("Rubricas")!=0 || RubricaSelEva!=null){
-                    Long newRubricaPos = RubricaSelEva.getId();
-                        EditorCreatorEva(newName, newRubricaPos);
-                        Intent i = new Intent(Agregar.this, Actividad_Evaluar.class);
-                        i.putExtra("Rub_id", RubricaSelEva.getId());
-                        i.putExtra("Mat_id", materiaestud.getId());
-                        i.putExtra("Eva_id", Evaluacion.find(Evaluacion.class, "name = ?", getIntent().getStringExtra("Eva_name")).get(0).getId());
-                        startActivity(i);
-                    }else{
-                        Toast.makeText(Agregar.this, "No se Guardo el Registro", Toast.LENGTH_SHORT).show();
-                    }
+                    mDatabase=FirebaseDatabase.getInstance().getReference("noterubric").child("Rubrica");
+                    mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            int cont=Integer.parseInt(String.valueOf(dataSnapshot.getChildrenCount()));
+                            if(cont!=0 || RubricaSelEva!=null){
+                                String newRubricaPos = RubricaSelEva.getKey();
+                                EditorCreatorEva(newName, newRubricaPos);
+                                Intent i = new Intent(Agregar.this, Actividad_Evaluar.class);
+                                i.putExtra("Rub_id", RubricaSelEva.getId());
+                                i.putExtra("Mat_id", materiaestud.getId());
+                                i.putExtra("Eva_id", Evaluacion.find(Evaluacion.class, "name = ?", getIntent().getStringExtra("Eva_name")).get(0).getId());
+                                startActivity(i);
+                            }else{
+                                Toast.makeText(Agregar.this, "No se Guardo el Registro", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
 
                     break;
                 case DialogInterface.BUTTON_NEGATIVE:

@@ -41,7 +41,7 @@ public class Actividad_Evaluar extends AppCompatActivity {
     private List<Elemento> elementoList;
 
     private Estudiante estudiante;
-    private Long evaluacionId;
+    private String evaluacionId;
     private Elemento elemento;
 
     private SpinnerAdapterEstud spinnerAdapterEstud;
@@ -68,7 +68,7 @@ public class Actividad_Evaluar extends AppCompatActivity {
         layoutRoot=(CoordinatorLayout) findViewById(R.id.root);
         list = (RecyclerView)findViewById(R.id.ReciclerView);
 
-        evaluacionId=getIntent().getLongExtra("Eva_id",0);
+        evaluacionId=getIntent().getStringExtra("Eva_id");
 
         materia= Materia.findById(Materia.class,getIntent().getLongExtra("Mat_id",0));
         rubrica=Rubrica.findById(Rubrica.class,getIntent().getLongExtra("Rub_id",0));
@@ -118,12 +118,12 @@ public class Actividad_Evaluar extends AppCompatActivity {
                         if(bEstudiante && bElemento){
                             tvNota.setVisibility(View.VISIBLE);
                             etNota.setVisibility(View.VISIBLE);
-                                NotaEstudElemento notaEstudElemento=estudiante.findRegister(evaluacionId,elemento.getId());
+                                /*NotaEstudElemento notaEstudElemento=estudiante.findRegister(evaluacionId,elemento.getId());
                                 if(notaEstudElemento!=null){
                                     etNota.setText(String.valueOf(notaEstudElemento.getNota()));
                                 }else{
                                     etNota.setText("");
-                                }
+                                }*/
                         }
                     }else{
                         tvNota.setVisibility(View.INVISIBLE);
@@ -167,14 +167,14 @@ public class Actividad_Evaluar extends AppCompatActivity {
                                         if(bEstudiante && bElemento){
                                             tvNota.setVisibility(View.VISIBLE);
                                             etNota.setVisibility(View.VISIBLE);
-                                                NotaEstudElemento notaEstudElemento=estudiante.findRegister(evaluacionId,elemento.getId());
+                                               /* NotaEstudElemento notaEstudElemento=estudiante.findRegister(evaluacionId,elemento.getId());
                                                 if(notaEstudElemento!=null){
                                                     Log.d("SpinnerEstud", "onItemSelected: "+ notaEstudElemento.getEstudiante());
                                                     etNota.setText(String.valueOf(notaEstudElemento.getNota()));
                                                 }else{
                                                     Log.d("SpinnerEstud", "onItemSelected: no nota");
                                                     etNota.setText("");
-                                                }
+                                                }*/
                                         }
                                     }else{
                                         bElemento=false;
@@ -309,7 +309,7 @@ public class Actividad_Evaluar extends AppCompatActivity {
             if(elemento!=null){
                 if(!TextUtils.isEmpty(etNota.getText().toString())){
                     Double calificacion = Double.parseDouble(etNota.getText().toString());
-                    List<NotaEstudElemento> notaEstudElementos= estudiante.getNotas(evaluacionId);
+                    /*List<NotaEstudElemento> notaEstudElementos= estudiante.getNotas(evaluacionId);
                     NotaEstudElemento nota;
                     Log.d("Notas", ""+notaEstudElementos.isEmpty());
                     if(!notaEstudElementos.isEmpty()){
@@ -321,16 +321,16 @@ public class Actividad_Evaluar extends AppCompatActivity {
                             Toast.makeText(Actividad_Evaluar.this, "Nota Actualizada Exitosamente", Toast.LENGTH_SHORT).show();
                         }else{
                             Log.d("Notas", "saving");
-                            nota= new NotaEstudElemento(estudiante.getId(),evaluacionId,elemento.getId(),calificacion);
+                            nota= new NotaEstudElemento(estudiante.getKey(),evaluacionId,elemento.getKey(),calificacion);
                             nota.save();
                             Toast.makeText(Actividad_Evaluar.this, "Nota Guardada Exitosamente", Toast.LENGTH_SHORT).show();
                         }
                     }else{
                         Log.d("Notas", "saving");
-                        nota= new NotaEstudElemento(estudiante.getId(),evaluacionId,elemento.getId(),calificacion);
+                        nota= new NotaEstudElemento(estudiante.getKey(),evaluacionId,elemento.getKey(),calificacion);
                         nota.save();
                         Toast.makeText(Actividad_Evaluar.this, "Nota Guardada Exitosamente", Toast.LENGTH_SHORT).show();
-                    }
+                    }*/
                 }else{
                     etNota.setError("No puede estar vacio");
                 }

@@ -1,5 +1,7 @@
 package com.uninorte.proyecto1;
 
+import android.util.Log;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -12,12 +14,15 @@ import com.google.firebase.database.ValueEventListener;
 public class Counts {
 
     public int countClass(String Class){
-        final int[] cont = {0};
+        final int[] count = new int[1];
         FirebaseDatabase.getInstance().getReference("noterubric").child(Class).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                for(DataSnapshot snap: dataSnapshot.getChildren()) cont[0]++;
+                Long numChildren= dataSnapshot.getChildrenCount();
+
+                count[0] =Integer.parseInt(String.valueOf(numChildren));
+                Log.d("count", "onDataChange: "+count[0]);
 
             }
 
@@ -26,6 +31,7 @@ public class Counts {
 
             }
         });
-        return cont[0];
+
+        return count[0];
     }
 }

@@ -7,40 +7,40 @@ import com.orm.SugarRecord;
  */
 
 public class NotaEstudElemento extends SugarRecord {
-    private Long estudiante,evaluacion,elemento;
+    private String estudiante,evaluacion,elemento;
     private double nota;
 
     public NotaEstudElemento() {
     }
 
-    public NotaEstudElemento(Long estudiante, Long evaluacion, Long elemento, double nota) {
+    public NotaEstudElemento(String estudiante, String evaluacion, String elemento, double nota) {
         this.estudiante = estudiante;
         this.evaluacion = evaluacion;
         this.elemento = elemento;
         this.nota = nota;
     }
 
-    public Long getEstudiante() {
+    public String getEstudiante() {
         return estudiante;
     }
 
-    public void setEstudiante(Long estudiante) {
+    public void setEstudiante(String estudiante) {
         this.estudiante = estudiante;
     }
 
-    public Long getEvaluacion() {
+    public String getEvaluacion() {
         return evaluacion;
     }
 
-    public void setEvaluacion(Long evaluacion) {
+    public void setEvaluacion(String evaluacion) {
         this.evaluacion = evaluacion;
     }
 
-    public Long getElemento() {
+    public String getElemento() {
         return elemento;
     }
 
-    public void setElemento(Long elemento) {
+    public void setElemento(String elemento) {
         this.elemento = elemento;
     }
 

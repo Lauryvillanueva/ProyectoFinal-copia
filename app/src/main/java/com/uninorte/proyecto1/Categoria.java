@@ -14,22 +14,21 @@ public class Categoria extends SugarRecord {
     private String name;
 
     private int peso;
-    private Long rubrica;
-    private String id;
+    private String rubrica;
+    private String key;
 
-    @Override
-    public Long getId() {
-        return Long.valueOf(id);
+    public String getKey() {
+        return key;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public Categoria(String name, int peso, Rubrica rubrica) {
         this.name = name;
         this.peso=peso;
-        this.rubrica = rubrica.getId();
+        this.rubrica = rubrica.getKey();
     }
 
     public Categoria() {    }
@@ -46,12 +45,12 @@ public class Categoria extends SugarRecord {
 
     public void setPeso(int peso) { this.peso = peso; }
 
-    public Long getRubrica() {
+    public String getRubrica() {
         return rubrica;
     }
 
     public void setRubrica(Rubrica rubrica) {
-        this.rubrica = rubrica.getId();
+        this.rubrica = rubrica.getKey();
     }
 
     public List<Elemento> getElementos(){

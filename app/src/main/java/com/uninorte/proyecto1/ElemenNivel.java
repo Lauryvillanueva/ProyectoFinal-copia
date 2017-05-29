@@ -7,10 +7,11 @@ import com.orm.SugarRecord;
  */
 
 public class ElemenNivel extends SugarRecord {
-    private Long elemento,nivel;
+    private String elemento,nivel;
     private String description;
+    private String key;
 
-    public ElemenNivel(Long elemento, Long nivel, String description) {
+    public ElemenNivel(String elemento, String nivel, String description) {
         this.elemento = elemento;
         this.nivel = nivel;
         this.description = description;
@@ -18,19 +19,19 @@ public class ElemenNivel extends SugarRecord {
 
     public ElemenNivel() {    }
 
-    public Long getElemento() {
+    public String getElemento() {
         return elemento;
     }
 
-    public void setElemento(Long elemento) {
+    public void setElemento(String elemento) {
         this.elemento = elemento;
     }
 
-    public Long getNivel() {
+    public String getNivel() {
         return nivel;
     }
 
-    public void setNivel(Long nivel) {
+    public void setNivel(String nivel) {
         this.nivel = nivel;
     }
 
@@ -40,5 +41,13 @@ public class ElemenNivel extends SugarRecord {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }

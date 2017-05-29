@@ -17,6 +17,12 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +36,8 @@ public class Actividad_Materias extends AppCompatActivity {
     long initialCount;
     int modifyPos = -1;
 
+    private DatabaseReference mDatabase;
+
     CoordinatorLayout layoutRoot;
 
     @Override
@@ -42,39 +50,58 @@ public class Actividad_Materias extends AppCompatActivity {
         layoutRoot=(CoordinatorLayout) findViewById(R.id.root);
 
         auth=FirebaseAuth.getInstance();
+        mDatabase=FirebaseDatabase.getInstance().getReference("noterubric").child("Materia");
+        //initialCount= Materia.count(Materia.class);
 
-        initialCount= Materia.count(Materia.class);
-        Log.d("create", "onCreate initialcountMat: "+initialCount);
+
         list = (RecyclerView)findViewById(R.id.ReciclerView);
 
         if (savedInstanceState != null)
             modifyPos = savedInstanceState.getInt("modify");
 
-        if(initialCount>=0){
+        materiasList=new ArrayList<>();
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                initialCount = dataSnapshot.getChildrenCount();
+                Log.d("create", "onCreate initialcountMat: "+initialCount);
+                if(initialCount>=0){
 
-            materiasList = Materia.listAll(Materia.class);
-            customAdapterMat = new CustomAdapterMat(this,materiasList);
-            list.setAdapter(customAdapterMat);
-            list.setLayoutManager(new LinearLayoutManager(this));
+                    //materiasList = Materia.listAll(Materia.class);
 
-            if (materiasList.isEmpty())
-                Snackbar.make(layoutRoot, "No hay Materias.", Snackbar.LENGTH_LONG).show();
-            else{
+                    for (DataSnapshot snap:dataSnapshot.getChildren()){
+                        materiasList.add(snap.getValue(Materia.class));
+                    }
+                    customAdapterMat = new CustomAdapterMat(Actividad_Materias.this,materiasList);
+                    list.setAdapter(customAdapterMat);
+                    list.setLayoutManager(new LinearLayoutManager(Actividad_Materias.this));
 
-                customAdapterMat.SetOnItemClickListener(new CustomAdapterMat.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        Log.d("Materia","click "+position);
-                        Intent i= new Intent(Actividad_Materias.this,Actividad_Estudiantes.class);
-                        i.putExtra("Mat_name", materiasList.get(position).getName());
-                        startActivity(i);
+                    if (materiasList.isEmpty())
+                        Snackbar.make(layoutRoot, "No hay Materias.", Snackbar.LENGTH_LONG).show();
+                    else{
+
+                        customAdapterMat.SetOnItemClickListener(new CustomAdapterMat.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(View view, int position) {
+                                Log.d("Materia","click "+position);
+                                Intent i= new Intent(Actividad_Materias.this,Actividad_Estudiantes.class);
+                                i.putExtra("Mat_name", materiasList.get(position).getName());
+                                startActivity(i);
+
+                            }
+                        });
 
                     }
-                });
 
+                }
             }
 
-        }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -113,7 +140,8 @@ public class Actividad_Materias extends AppCompatActivity {
                 materiasList.remove(viewHolder.getAdapterPosition());
                 customAdapterMat.notifyItemRemoved(position);
 
-                materia.delete();
+                //materia.delete();
+                mDatabase.child(materia.getKey()).removeValue();
                 initialCount -= 1;
 
                 Snackbar.make(layoutRoot, "Materia Eliminada", Snackbar.LENGTH_SHORT)
@@ -121,7 +149,8 @@ public class Actividad_Materias extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
 
-                                materia.save();
+                               // materia.save();
+                                mDatabase.child(materia.getKey()).setValue(materia);
                                 materiasList.add(position, materia);
                                 customAdapterMat.notifyItemInserted(position);
                                 initialCount += 1;
@@ -159,25 +188,62 @@ public class Actividad_Materias extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        final long newCount = Materia.count(Materia.class);
+        //final long newCount = Materia.count(Materia.class);
 
-        if (newCount > initialCount) {
+        //final long newCount = new Counts().countClass("Materia");
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                long newCount = dataSnapshot.getChildrenCount();
+                if (newCount > initialCount) {
 
-            Log.d("Main", "Adding new materia");
+                    Log.d("Main", "Adding new materia");
 
 
-            Materia materia = Materia.last(Materia.class);
+                    // Materia materia = Materia.last(Materia.class);
 
-            materiasList.add(materia);
-            customAdapterMat.notifyItemInserted((int) newCount);
+                    Query lastQuery= mDatabase.orderByKey().limitToLast(1);
+                    lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Materia materia= dataSnapshot.getValue(Materia.class);
+                            materiasList.add(materia);
 
-            initialCount = newCount;
-        }
+                        }
 
-        if (modifyPos != -1) {
-            materiasList.set(modifyPos, Materia.listAll(Materia.class).get(modifyPos));
-            customAdapterMat.notifyItemChanged(modifyPos);
-        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                    customAdapterMat.notifyItemInserted((int) newCount);
+
+                    initialCount = newCount;
+
+
+                }
+                if (modifyPos != -1) {
+                    int cont=0;
+                    for (DataSnapshot snap: dataSnapshot.getChildren()){
+                        if (cont==modifyPos){
+                            //materiasList.set(modifyPos, Materia.listAll(Materia.class).get(modifyPos));
+                            materiasList.set(modifyPos, snap.getValue(Materia.class));
+                            break;
+                        }
+                        cont++;
+                    }
+                    customAdapterMat.notifyDataSetChanged();
+                    //customAdapterMat.notifyItemChanged(modifyPos);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
 
     }
 

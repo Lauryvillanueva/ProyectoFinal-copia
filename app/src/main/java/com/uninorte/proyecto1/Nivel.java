@@ -10,7 +10,7 @@ import com.orm.dsl.Unique;
 public class Nivel extends SugarRecord {
     @Unique
     private String name;
-    private String id;
+    private String key;
 
     private Long rubrica;
 
@@ -19,15 +19,14 @@ public class Nivel extends SugarRecord {
         this.rubrica = rubrica.getId();
     }
 
-    @Override
-    public Long getId() {
-        return Long.valueOf(id);
+
+    public String getKey() {
+        return key;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setKey(String key) {
+        this.key = key;
     }
-
 
     public Nivel() {    }
 

@@ -10,23 +10,22 @@ import java.util.List;
 
 public class Estudiante extends SugarRecord {
     private String name ;
-    private Long materia;
+    private String materia;
     int state;
-    private String id;
+    private String key;
 
-    @Override
-    public Long getId() {
-        return Long.valueOf(id);
+    public String getKey() {
+        return key;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public Estudiante(String namestud, int statestud, Materia mat) {
         name = namestud;
         state = statestud;
-        materia=mat.getId();
+        materia=mat.getKey();
 
     }
 
@@ -48,12 +47,12 @@ public class Estudiante extends SugarRecord {
         state = statestud;
     }
 
-    public Long getMateria() {
+    public String getMateria() {
         return materia;
     }
 
     public void setMateria(Materia materia) {
-        this.materia = materia.getId();
+        this.materia = materia.getKey();
     }
 
     public List<NotaEstudElemento> getNotas(Long evaluacion){

@@ -15,7 +15,7 @@ import java.util.List;
 public class Materia extends SugarRecord implements Serializable{
     @Unique
     private String name;
-    private String id;
+    private String key;
 
     public Materia(String namemat) {
         name = namemat;
@@ -23,13 +23,13 @@ public class Materia extends SugarRecord implements Serializable{
 
     public Materia(){}
 
-    @Override
-    public Long getId() {
-        return Long.valueOf(id);
+
+    public String getKey() {
+        return key;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public List<Estudiante> getEstudiantes(){

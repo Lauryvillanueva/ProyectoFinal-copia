@@ -67,8 +67,8 @@ public class Actividad_VerReporte extends AppCompatActivity {
             switch (title) {
                 case "Evaluacion":
                     evaluacion = Evaluacion.findById(Evaluacion.class, reporteId);
-                    materia = Materia.findById(Materia.class, evaluacion.getMateria());
-                    estudianteList = materia.getEstudiantes();
+                   // materia = Materia.findById(Materia.class, evaluacion.getMateria());
+                    //estudianteList = materia.getEstudiantes();
 
                     if (!estudianteList.isEmpty()) {
                         for (Estudiante estudianteItem: estudianteList) {
@@ -77,9 +77,9 @@ public class Actividad_VerReporte extends AppCompatActivity {
                             if(!notaEstudElementoList.isEmpty()) {
                                 for (NotaEstudElemento notaEstudElementoItem: notaEstudElementoList) {
                                     notaEstudElemento=notaEstudElementoItem;
-                                    elemento=Elemento.findById(Elemento.class,notaEstudElemento.getElemento());
-                                    categoria=Categoria.findById(Categoria.class,elemento.getCategoria());
-                                   if(notaEstudElemento.getEvaluacion()==evaluacion.getId()){
+                                    //elemento=Elemento.findById(Elemento.class,notaEstudElemento.getElemento());
+                                   // categoria=Categoria.findById(Categoria.class,elemento.getCategoria());
+                                   /*if(notaEstudElemento.getEvaluacion()==evaluacion.getId()){
                                        nota=notaEstudElemento.getNota()*(elemento.getPeso()/100.0)*(categoria.getPeso()/100.0);
                                         if(reporteLists.isEmpty()){
                                             reporteLists.add(new Reporte(estudiante.getName(),nota,estudiante.getId()));
@@ -91,7 +91,7 @@ public class Actividad_VerReporte extends AppCompatActivity {
                                                 reporteLists.get(containsId(reporteLists,estudiante.getId())).addNota(nota);
                                             }
                                         }
-                                   }
+                                   }*/
 
                                 }
                             }else{
@@ -111,7 +111,7 @@ public class Actividad_VerReporte extends AppCompatActivity {
                     break;
                 case "Estudiante":
                     estudiante=Estudiante.findById(Estudiante.class,reporteId);
-                    materia=Materia.findById(Materia.class,estudiante.getMateria());
+                    //materia=Materia.findById(Materia.class,estudiante.getMateria());
                     evaluacionList=materia.getEvaluaciones();
 
                     if(!evaluacionList.isEmpty()){
@@ -121,9 +121,9 @@ public class Actividad_VerReporte extends AppCompatActivity {
                             if(!notaEstudElementoList.isEmpty()) {
                                 for (NotaEstudElemento notaEstudElementoItem: notaEstudElementoList) {
                                     notaEstudElemento=notaEstudElementoItem;
-                                    elemento=Elemento.findById(Elemento.class,notaEstudElemento.getElemento());
-                                    categoria=Categoria.findById(Categoria.class,elemento.getCategoria());
-                                    if(notaEstudElemento.getEvaluacion()==evaluacion.getId()){
+                                    //elemento=Elemento.findById(Elemento.class,notaEstudElemento.getElemento());
+                                    //categoria=Categoria.findById(Categoria.class,elemento.getCategoria());
+                                    /*if(notaEstudElemento.getEvaluacion()==evaluacion.getId()){
                                         nota=notaEstudElemento.getNota()*(elemento.getPeso()/100.0)*(categoria.getPeso()/100.0);
                                         if(reporteLists.isEmpty()){
                                             reporteLists.add(new Reporte(evaluacion.getName(),nota,evaluacion.getId()));
@@ -135,7 +135,7 @@ public class Actividad_VerReporte extends AppCompatActivity {
                                                 reporteLists.get(containsId(reporteLists,evaluacion.getId())).addNota(nota);
                                             }
                                         }
-                                    }
+                                    }*/
 
                                 }
                             }else{

@@ -13,25 +13,24 @@ public class Elemento extends SugarRecord {
     @Unique
     private String name;
     private int peso;
-    private Long categoria;
-    private String id;
+    private String categoria;
+    private String key;
 
     public Elemento(String name, int peso, Categoria categoria) {
         this.name = name;
         this.peso = peso;
-        this.categoria = categoria.getId();
+        this.categoria = categoria.getKey();
     }
 
     public Elemento() {
     }
 
-    @Override
-    public Long getId() {
-        return Long.valueOf(id);
+    public String getKey() {
+        return key;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String getName() {
@@ -50,12 +49,12 @@ public class Elemento extends SugarRecord {
         this.peso = peso;
     }
 
-    public Long getCategoria() {
+    public String getCategoria() {
         return categoria;
     }
 
     public void setCategoria(Categoria categoria) {
-        this.categoria = categoria.getId();
+        this.categoria = categoria.getKey();
     }
 
     public List<ElemenNivel> getDescriptions(){

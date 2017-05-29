@@ -12,15 +12,14 @@ import java.util.List;
 public class Rubrica extends SugarRecord {
     @Unique
     private String name;
-    private String id;
+    private String key;
 
-    @Override
-    public Long getId() {
-        return Long.valueOf(id);
+    public String getKey() {
+        return key;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public Rubrica(String name) {

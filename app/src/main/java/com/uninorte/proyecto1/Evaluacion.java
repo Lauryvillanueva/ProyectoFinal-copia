@@ -10,33 +10,32 @@ import com.orm.dsl.Unique;
 public class Evaluacion extends SugarRecord {
     @Unique
     private String name;
-    private Long materia;
-    private Long rubrica;
-    private String id;
+    private String materia;
+    private String rubrica;
+    private String key;
 
-    public Evaluacion(String name, Materia materia, Long rubrica) {
+    public Evaluacion(String name, Materia materia, String rubrica) {
         this.name = name;
-        this.materia = materia.getId();
+        this.materia = materia.getKey();
         this.rubrica = rubrica;
     }
 
-    @Override
-    public Long getId() {
-        return Long.valueOf(id);
+    public String getKey() {
+        return key;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public Evaluacion() {
     }
 
-    public Long getRubrica() {
+    public String getRubrica() {
         return rubrica;
     }
 
-    public void setRubrica(Long rubrica) {
+    public void setRubrica(String rubrica) {
         this.rubrica = rubrica;
     }
 
@@ -48,12 +47,12 @@ public class Evaluacion extends SugarRecord {
         this.name = name;
     }
 
-    public Long getMateria() {
+    public String getMateria() {
         return materia;
     }
 
     public void setMateria(Materia materia) {
-        this.materia = materia.getId();
+        this.materia = materia.getKey();
     }
 
 

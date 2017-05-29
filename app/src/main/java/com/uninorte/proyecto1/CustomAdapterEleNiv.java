@@ -2,6 +2,7 @@
 package com.uninorte.proyecto1;
 
 import android.content.Context;
+import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,13 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,11 +28,11 @@ public class CustomAdapterEleNiv extends  RecyclerView.Adapter<CustomAdapterEleN
     private List<Nivel> nivelLists;
     private Context context;
     private boolean selector;
-    private Long elementoid;
+    private String elementoid;
 
     OnItemClickListener clickListener;
 
-     public CustomAdapterEleNiv(Context context, List<Nivel> nivelLists, boolean selector, Long elementoid) {
+     public CustomAdapterEleNiv(Context context, List<Nivel> nivelLists, boolean selector, String elementoid) {
         this.nivelLists = nivelLists;
         this.context = context;
         this.selector=selector;
@@ -50,13 +58,69 @@ public class CustomAdapterEleNiv extends  RecyclerView.Adapter<CustomAdapterEleN
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         Nivel nivelList = nivelLists.get(position);
-        ViewHolder mViewHolderEleNiv = viewHolder;
+        final ViewHolder mViewHolderEleNiv = viewHolder;
         mViewHolderEleNiv.tvNivName.setText(nivelList.getName());
         Long count;
-        count= ElemenNivel.count(ElemenNivel.class);
-        if (count>0) {
+        //count= ElemenNivel.count(ElemenNivel.class);
+        DatabaseReference mDatabaseReference= FirebaseDatabase.getInstance().getReference("noterubric").child("ElemenNivel");
+        mDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getChildrenCount()>0){
+                    DatabaseReference mDatabaseRef=FirebaseDatabase.getInstance().getReference("noterubric").child("Elemento");
+                    mDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for(DataSnapshot snap:dataSnapshot.getChildren()){
+                                if(snap.getValue(Elemento.class).getKey().equals(elementoid)){
+                                    final Elemento elemento = snap.getValue(Elemento.class);
+                                    DatabaseReference referencia= FirebaseDatabase.getInstance().getReference("noterubric").child("ElemenNivel");
+                                    referencia.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                            List<ElemenNivel> elenivdescriptions= new ArrayList<>();
+                                            for (DataSnapshot snap:dataSnapshot.getChildren()){
+                                                if(snap.getValue(ElemenNivel.class).getElemento().equals(elemento.getKey())){
+                                                    elenivdescriptions.add(snap.getValue(ElemenNivel.class));
+                                                }
+                                            }
+
+                                            if (!elenivdescriptions.isEmpty()) {
+                                                if(position<elenivdescriptions.size()) {
+                                                    ElemenNivel elenivdescription = elenivdescriptions.get(position);
+                                                    mViewHolderEleNiv.Edesc.setText(elenivdescription.getDescription());
+                                                }
+                                            }
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        /*if (count>0) {
             Elemento elemento = Elemento.findById(Elemento.class,elementoid);
             List<ElemenNivel> elenivdescriptions= elemento.getDescriptions();
             Log.d("onBindViewHolder: ", "Count: "+elenivdescriptions.size());
@@ -66,7 +130,7 @@ public class CustomAdapterEleNiv extends  RecyclerView.Adapter<CustomAdapterEleN
                     mViewHolderEleNiv.Edesc.setText(elenivdescription.getDescription());
                 }
             }
-        }
+        //}*/
         if(selector) {
             mViewHolderEleNiv.Edesc.setVisibility(View.VISIBLE);
             mViewHolderEleNiv.Edesc.setTag(position);
