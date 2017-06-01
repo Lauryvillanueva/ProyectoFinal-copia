@@ -18,6 +18,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +35,8 @@ public class Actividad_Rubricas extends AppCompatActivity {
     private CustomAdapterRub customAdapterRub;
     long initialCount;
     int modifyPos = -1;
+
+    private DatabaseReference mDatabase;
 
     CoordinatorLayout layoutRoot;
     @Override
@@ -43,6 +51,10 @@ public class Actividad_Rubricas extends AppCompatActivity {
 
         layoutRoot=(CoordinatorLayout) findViewById(R.id.root);
 
+        auth=FirebaseAuth.getInstance();
+        mDatabase= FirebaseDatabase.getInstance().getReference("noterubric").child("Rubrica");
+        //initialCount= Materia.count(Materia.class);
+
         initialCount= Rubrica.count(Rubrica.class);
         Log.d("create", "onCreate initialcountMat: "+initialCount);
         list = (RecyclerView)findViewById(R.id.ReciclerView);
@@ -50,31 +62,45 @@ public class Actividad_Rubricas extends AppCompatActivity {
         if (savedInstanceState != null)
             modifyPos = savedInstanceState.getInt("modify");
 
-        if(initialCount>=0){
+        rubricasList=new ArrayList<>();
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                initialCount = dataSnapshot.getChildrenCount();
+                Log.d("create", "onCreate initialcountMat: "+initialCount);
 
-            rubricasList = Rubrica.listAll(Rubrica.class);
-            customAdapterRub = new CustomAdapterRub(this,rubricasList);
-            list.setAdapter(customAdapterRub);
-            list.setLayoutManager(new LinearLayoutManager(this));
+                if(initialCount>=0){
+                    //rubricasList = Rubrica.listAll(Rubrica.class);
+                    for (DataSnapshot snap:dataSnapshot.getChildren()){
+                        rubricasList.add(snap.getValue(Rubrica.class));
+                    }
+                    customAdapterRub = new CustomAdapterRub(Actividad_Rubricas.this,rubricasList);
+                    list.setAdapter(customAdapterRub);
+                    list.setLayoutManager(new LinearLayoutManager(Actividad_Rubricas.this));
 
-            if (rubricasList.isEmpty())
-                Snackbar.make(layoutRoot, "No hay Rubricas.", Snackbar.LENGTH_LONG).show();
-            else{
-
-                customAdapterRub.SetOnItemClickListener(new CustomAdapterRub.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        Log.d("Rubrica","click "+position);
+                    if (rubricasList.isEmpty())
+                        Snackbar.make(layoutRoot, "No hay Rubricas.", Snackbar.LENGTH_LONG).show();
+                    else{
+                        customAdapterRub.SetOnItemClickListener(new CustomAdapterRub.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(View view, int position) {
+                                Log.d("Rubrica","click "+position);
                         /*Intent i= new Intent(Actividad_Rubricas.this,Actividad_Estudiantes.class);
                         i.putExtra("Rub_name", rubricasList.get(position).getName());
                         startActivity(i);*/
 
+                            }
+                        });
                     }
-                });
+                 }
 
             }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-        }
+            }
+        });
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -111,7 +137,9 @@ public class Actividad_Rubricas extends AppCompatActivity {
                 rubricasList.remove(viewHolder.getAdapterPosition());
                 customAdapterRub.notifyItemRemoved(position);
 
-                rubrica.delete();
+                //rubrica.delete();
+                mDatabase.child(rubrica.getKey()).removeValue();
+
                 initialCount -= 1;
 
                 Snackbar.make(layoutRoot, "Rubrica Eliminada", Snackbar.LENGTH_SHORT)
@@ -119,7 +147,8 @@ public class Actividad_Rubricas extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
 
-                                rubrica.save();
+                                //rubrica.save();
+                                mDatabase.child(rubrica.getKey()).setValue(rubrica);
                                 rubricasList.add(position, rubrica);
                                 customAdapterRub.notifyItemInserted(position);
                                 initialCount += 1;
@@ -157,25 +186,67 @@ public class Actividad_Rubricas extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        final long newCount = Rubrica.count(Rubrica.class);
+        //final long newCount = Rubrica.count(Rubrica.class);
 
-        if (newCount > initialCount) {
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                final long newCount = dataSnapshot.getChildrenCount();
+                if (newCount > initialCount) {
+                    Log.d("Main", "Adding new rubrica");
+                    // Rubrica rubrica = Rubrica.last(Rubrica.class);
 
-            Log.d("Main", "Adding new rubrica");
+                    Query lastQuery= mDatabase.limitToLast(1);
 
+                    lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Rubrica rubrica= dataSnapshot.getValue(Rubrica.class);
+                            rubricasList.add(rubrica);
+                            customAdapterRub.notifyItemInserted((int) newCount);
+                            initialCount = newCount;
 
-            Rubrica rubrica = Rubrica.last(Rubrica.class);
+                        }
 
-            rubricasList.add(rubrica);
-            customAdapterRub.notifyItemInserted((int) newCount);
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
-            initialCount = newCount;
+                        }
+                    });
+                }
+
         }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-        if (modifyPos != -1) {
-            rubricasList.set(modifyPos, Rubrica.listAll(Rubrica.class).get(modifyPos));
-            customAdapterRub.notifyItemChanged(modifyPos);
-        }
+            }
+        });
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (modifyPos != -1) {
+                    int cont=0;
+                    for (DataSnapshot snap: dataSnapshot.getChildren()){
+                        if (cont==modifyPos){
+                            //rubricasList.set(modifyPos, Rubrica.listAll(Rubrica.class).get(modifyPos));
+                            rubricasList.set(modifyPos, snap.getValue(Rubrica.class));
+                            break;
+                        }
+                        cont++;
+                    }
+                    customAdapterRub.notifyDataSetChanged();
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
 
     }
 
@@ -204,23 +275,20 @@ public class Actividad_Rubricas extends AppCompatActivity {
     }
 
     public void onClick_Edit(View view){
-
         int position = (int) view.getTag();
         Intent i = new Intent(Actividad_Rubricas.this,Agregar.class);
         i.putExtra("isEditing", true);
         i.putExtra("Rub_name", rubricasList.get(position).getName());
         i.putExtra("title","Rubrica");
-
         modifyPos = position;
-
-        startActivity(i);
+       startActivity(i);
 
 
     }
     public void onClick_View(View view){
         int position = (int) view.getTag();
         Intent i = new Intent(Actividad_Rubricas.this,VistaRubricas.class);
-        i.putExtra("RubricaId", rubricasList.get(position).getId());
+        i.putExtra("RubricaId", rubricasList.get(position).getKey());
         startActivity(i);
     }
     public void onClick_Note(View view){

@@ -143,18 +143,11 @@ public class Agregar extends AppCompatActivity {
                 stateEstud.setVisibility(View.VISIBLE);
                 estado.setVisibility(View.VISIBLE);
                // materiaestud = Materia.find(Materia.class, "name = ?", getIntent().getStringExtra("Mat_name")).get(0);
-                mDatabase=FirebaseDatabase.getInstance().getReference("noterubric").child("Materia");
+                mDatabase=FirebaseDatabase.getInstance().getReference("noterubric").child("Materia").child(getIntent().getStringExtra("Mat_name"));
                 mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot snap: dataSnapshot.getChildren()) {
-                            Materia materia= snap.getValue(Materia.class);
-                            if(materia.getName().equals(getIntent().getStringExtra("Mat_name"))){
-                                materiaestud=materia;
-                                break;
-                            }
-                        }
-
+                        materiaestud= dataSnapshot.getValue(Materia.class);
                     }
 
                     @Override

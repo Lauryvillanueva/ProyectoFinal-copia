@@ -17,6 +17,14 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
@@ -25,6 +33,7 @@ import java.util.List;
 public class Actividad_Estudiantes extends AppCompatActivity {
 
     private RecyclerView list;
+    private FirebaseAuth auth;
     private List<Estudiante> estudiantesList = new ArrayList<>();
     private CustomAdapterEstud customAdapterEstud;
     private Materia materiaEstud;
@@ -33,6 +42,7 @@ public class Actividad_Estudiantes extends AppCompatActivity {
     long initialCount;
     int modifyPos = -1;
 
+    private DatabaseReference mDatabase;
 
     CoordinatorLayout layoutRoot;
 
@@ -46,37 +56,91 @@ public class Actividad_Estudiantes extends AppCompatActivity {
 
         layoutRoot=(CoordinatorLayout) findViewById(R.id.root);
 
+        auth= FirebaseAuth.getInstance();
+        mDatabase= FirebaseDatabase.getInstance().getReference("noterubric").child("Estudiante");
+
         MatName=getIntent().getStringExtra("Mat_name");
 
-        initialCount = Estudiante.count(Estudiante.class);
+        //initialCount = Estudiante.count(Estudiante.class);
+
+
         Log.d("create", "onCreate initialcountEstud: "+initialCount);
         list = (RecyclerView)findViewById(R.id.ReciclerView);
 
         if (savedInstanceState != null)
             modifyPos = savedInstanceState.getInt("modify");
+        final DatabaseReference mDatabaseEst= FirebaseDatabase.getInstance().getReference("noterubric").child("Estudiante");
+        final DatabaseReference mDatabaseMateria=FirebaseDatabase.getInstance().getReference("noterubric").child("Materia").child(MatName);
 
-        if(initialCount>=0){
-            materiaEstud= Materia.find(Materia.class,"name = ?",MatName).get(0);
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                initialCount = dataSnapshot.getChildrenCount();
+                if(initialCount>=0){
 
-            //estudiantesList = Estudiante.find(Estudiante.class,"materia=?",new String[]{materiaEstud.getId().toString()});
-            estudiantesList = materiaEstud.getEstudiantes();
+                    mDatabaseMateria.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            materiaEstud= dataSnapshot.getValue(Materia.class);
 
-            customAdapterEstud = new CustomAdapterEstud(this,estudiantesList);
-            list.setAdapter(customAdapterEstud);
-            list.setLayoutManager(new LinearLayoutManager(this));
+                            //estudiantesList = materiaEstud.getEstudiantes();
 
-            if (estudiantesList.isEmpty())
-                Snackbar.make(layoutRoot, "No hay Estudiantes.", Snackbar.LENGTH_LONG).show();
-            else{
-                customAdapterEstud.SetOnItemClickListener(new CustomAdapterEstud.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        Log.d("Estudiantes", "click");
-                    }
-                });
+                            mDatabaseEst.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshotestud) {
+                                    for (DataSnapshot snapestud: dataSnapshotestud.getChildren()){
+                                        Estudiante estud= snapestud.getValue(Estudiante.class);
+                                        if(estud.getMateria().equals(MatName)){
+                                            estudiantesList.add(estud);
+                                        }
+                                    }
+                                    customAdapterEstud = new CustomAdapterEstud(Actividad_Estudiantes.this,estudiantesList);
+                                    list.setAdapter(customAdapterEstud);
+                                    list.setLayoutManager(new LinearLayoutManager(Actividad_Estudiantes.this));
+
+                                    if (estudiantesList.isEmpty())
+                                        Snackbar.make(layoutRoot, "No hay Estudiantes.", Snackbar.LENGTH_LONG).show();
+                                    else{
+                                        customAdapterEstud.SetOnItemClickListener(new CustomAdapterEstud.OnItemClickListener() {
+                                            @Override
+                                            public void onItemClick(View view, int position) {
+                                                Log.d("Estudiantes", "click");
+                                            }
+                                        });
+                                    }
+
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
+
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                    //materiaEstud= Materia.find(Materia.class,"name = ?",MatName).get(0);
+
+
+                    //estudiantesList = Estudiante.find(Estudiante.class,"materia=?",new String[]{materiaEstud.getId().toString()});
+
+
+                }
             }
 
-        }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -113,7 +177,8 @@ public class Actividad_Estudiantes extends AppCompatActivity {
                 estudiantesList.remove(viewHolder.getAdapterPosition());
                 customAdapterEstud.notifyItemRemoved(position);
 
-                estudiante.delete();
+                //estudiante.delete();
+                mDatabase.child(estudiante.getKey()).removeValue();
                 initialCount -= 1;
 
                 Snackbar.make(layoutRoot, "Estudiante Eliminado", Snackbar.LENGTH_SHORT)
@@ -121,7 +186,8 @@ public class Actividad_Estudiantes extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
 
-                                estudiante.save();
+                                //estudiante.save();
+                                mDatabase.child(estudiante.getKey()).setValue(estudiante);
                                 estudiantesList.add(position, estudiante);
                                 customAdapterEstud.notifyItemInserted(position);
                                 initialCount += 1;
@@ -156,26 +222,65 @@ public class Actividad_Estudiantes extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        final long newCount = Estudiante.count(Estudiante.class);
+       // final long newCount = Estudiante.count(Estudiante.class);
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                final long newCount = dataSnapshot.getChildrenCount();
+                if (newCount > initialCount) {
 
-        if (newCount > initialCount) {
-
-            Log.d("Main", "Adding new Estudiante");
+                Log.d("Main", "Adding new Estudiante");
 
 
-            Estudiante estudiante = Estudiante.last(Estudiante.class);
+                //Estudiante estudiante = Estudiante.last(Estudiante.class);
+                    Query lastQuery= mDatabase.limitToLast(1);
+                    lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Estudiante estudiante= dataSnapshot.getValue(Estudiante.class);
+                            estudiantesList.add(estudiante);
+
+                            customAdapterEstud.notifyItemInserted((int) newCount);
+
+                            initialCount = newCount;
+
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (modifyPos != -1) {
+                    int cont=0;
+                    for (DataSnapshot snap: dataSnapshot.getChildren()){
+                        if (cont==modifyPos){
+                            // estudiantesList.set(modifyPos, materiaEstud.getEstudiantes().get(modifyPos));
+                            estudiantesList.set(modifyPos, snap.getValue(Estudiante.class));
+                            break;
+                        }
+                        cont++;
+                    }
+                    customAdapterEstud.notifyItemChanged(modifyPos);
+                }
 
 
-            estudiantesList.add(estudiante);
-            customAdapterEstud.notifyItemInserted((int) newCount);
+                }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-            initialCount = newCount;
-        }
-
-        if (modifyPos != -1) {
-            estudiantesList.set(modifyPos, materiaEstud.getEstudiantes().get(modifyPos));
-            customAdapterEstud.notifyItemChanged(modifyPos);
-        }
+            }
+        });
 
     }
 

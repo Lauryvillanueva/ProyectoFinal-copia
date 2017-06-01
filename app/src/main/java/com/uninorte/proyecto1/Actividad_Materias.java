@@ -61,7 +61,7 @@ public class Actividad_Materias extends AppCompatActivity {
 
         materiasList=new ArrayList<>();
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
+                    @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 initialCount = dataSnapshot.getChildrenCount();
                 Log.d("create", "onCreate initialcountMat: "+initialCount);
@@ -85,7 +85,7 @@ public class Actividad_Materias extends AppCompatActivity {
                             public void onItemClick(View view, int position) {
                                 Log.d("Materia","click "+position);
                                 Intent i= new Intent(Actividad_Materias.this,Actividad_Estudiantes.class);
-                                i.putExtra("Mat_name", materiasList.get(position).getName());
+                                i.putExtra("Mat_name", materiasList.get(position).getKey());
                                 startActivity(i);
 
                             }
