@@ -26,6 +26,7 @@ public class SpinnerAdapterMat extends ArrayAdapter<Materia> {
         this.materiaLists = materiaLists;
     }
 
+
     public int getCount(){
         return materiaLists.size();
     }
@@ -43,8 +44,6 @@ public class SpinnerAdapterMat extends ArrayAdapter<Materia> {
         TextView textView = (TextView) View.inflate(context, android.R.layout.simple_spinner_item, null);
         textView.setText(materiaLists.get(position).getName());
         return textView;
-
-
     }
 
 

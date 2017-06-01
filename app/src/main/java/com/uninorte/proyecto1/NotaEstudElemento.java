@@ -10,6 +10,7 @@ public class NotaEstudElemento extends SugarRecord {
     private String estudiante,evaluacion,elemento;
     private double nota;
 
+
     public NotaEstudElemento() {
     }
 

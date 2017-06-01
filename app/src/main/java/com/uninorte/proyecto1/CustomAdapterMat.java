@@ -13,6 +13,7 @@ import java.util.List;
 public class CustomAdapterMat extends RecyclerView.Adapter<CustomAdapterMat.ViewHolder>{
     private List<Materia> materiaLists;
     private Context context;
+    long initialCount;
 
     OnItemClickListener clickListener;
 

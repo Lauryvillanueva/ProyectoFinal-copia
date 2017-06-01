@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -19,6 +20,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
@@ -44,12 +52,13 @@ public class Actividad_SelectReporte extends AppCompatActivity {
     private Estudiante estudiante;
 
     CoordinatorLayout layoutRoot;
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selectreporte);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         layoutRoot=(CoordinatorLayout) findViewById(R.id.root);
 
@@ -66,111 +75,161 @@ public class Actividad_SelectReporte extends AppCompatActivity {
         spEstud=(MaterialSpinner) findViewById(R.id.spinnerEstudiante);
         spEvalu=(MaterialSpinner) findViewById(R.id.spinnerEvaluacion);
 
-        if(Materia.count(Materia.class)>0){
-            materiaList=Materia.listAll(Materia.class);
-            spinnerAdapterMat= new SpinnerAdapterMat(this, android.R.layout.simple_spinner_item, materiaList);
-            spinnerAdapterMat.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spMateria.setAdapter(spinnerAdapterMat);
-            spMateria.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    if(i!=-1) {
-                        switch (title) {
-                            case "Evaluacion":
-
-                                if (Evaluacion.count(Evaluacion.class) > 0) {
-                                    layoutEval.setVisibility(View.VISIBLE);
-                                    evaluacionList = materiaList.get(i).getEvaluaciones();
-                                    spinnerAdapterEval = new SpinnerAdapterEval(Actividad_SelectReporte.this, android.R.layout.simple_spinner_item, evaluacionList);
-                                    spinnerAdapterEval.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                                    spEvalu.setAdapter(spinnerAdapterEval);
-                                    spEvalu.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                                        @Override
-                                        public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
-                                            if(pos!=-1){
-                                                evaluacion=evaluacionList.get(pos);
-                                                btnVerReporte.setVisibility(View.VISIBLE);
-                                            }else{
-                                                btnVerReporte.setVisibility(View.GONE);
-                                            }
-
-                                        }
-
-                                        @Override
-                                        public void onNothingSelected(AdapterView<?> adapterView) {
-
-                                        }
-                                    });
-                                    if (evaluacionList.isEmpty()) {
-                                        Snackbar.make(layoutRoot, "No hay Evaluaciones.", Snackbar.LENGTH_LONG).show();
-                                    }
-                                }
-                                break;
-                            case "Estudiante":
-                                if (Estudiante.count(Estudiante.class) > 0) {
-                                    layoutEstud.setVisibility(View.VISIBLE);
-                                    estudianteList = materiaList.get(i).getEstudiantes();
-                                    spinnerAdapterEstud = new SpinnerAdapterEstud(Actividad_SelectReporte.this, android.R.layout.simple_spinner_item, estudianteList);
-                                    spinnerAdapterEstud.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                                    spEstud.setAdapter(spinnerAdapterEstud);
-                                    spEstud.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                                        @Override
-                                        public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
-                                            if(pos!=-1){
-                                                estudiante=estudianteList.get(pos);
-                                                btnVerReporte.setVisibility(View.VISIBLE);
-                                            }else{
-                                                btnVerReporte.setVisibility(View.GONE);
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onNothingSelected(AdapterView<?> adapterView) {
-
-                                        }
-                                    });
-                                    if (estudianteList.isEmpty()) {
-                                        Snackbar.make(layoutRoot, "No hay Estudiantes.", Snackbar.LENGTH_LONG).show();
-                                    }
-                                }
-                                break;
-                        }
-                    }else{
-                        btnVerReporte.setVisibility(View.GONE);
-                        switch(title){
-                            case "Evaluacion":
-                                layoutEval.setVisibility(View.GONE);
-                                break;
-                            case "Estudiante":
-                                layoutEstud.setVisibility(View.GONE);
-                                break;
-                        }
-                    }
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-
-                }
-            });
-
-
-            if (materiaList.isEmpty()){
-                Snackbar.make(layoutRoot, "No hay Materias.", Snackbar.LENGTH_LONG).show();
-            }
-
-        }
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        mDatabase= FirebaseDatabase.getInstance().getReference("noterubric").child("Materia");
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                int cont=Integer.parseInt(String.valueOf(dataSnapshot.getChildrenCount()));
+                if(cont>0) {
+                    materiaList=Materia.listAll(Materia.class);
 
+                    // initialize the array
+                    final List<String> mate = new ArrayList<String>();
+                     for (DataSnapshot areaSnapshot: dataSnapshot.getChildren()) {
+                        String namemat = areaSnapshot.child("name").getValue(String.class);
+                        mate.add(namemat);
+                    }
+                    ArrayAdapter<String> areasAdapter = new ArrayAdapter<String>(Actividad_SelectReporte.this, android.R.layout.simple_spinner_item, mate);
+                    areasAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spMateria.setAdapter(areasAdapter);
+
+
+                    spMateria.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, final int i, long l) {
+                            if(i!=-1) {
+                                switch (title) {
+                                    case "Evaluacion":
+
+                                        // if (Evaluacion.count(Evaluacion.class) > 0)
+                                        mDatabase=FirebaseDatabase.getInstance().getReference("noterubric").child("Evaluacion");
+                                        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                                              @Override
+                                              public void onDataChange(DataSnapshot dataSnapshot) {
+                                                  int cont=Integer.parseInt(String.valueOf(dataSnapshot.getChildrenCount()));
+                                                  if(cont>0) {
+                                                      layoutEval.setVisibility(View.VISIBLE);
+                                                      evaluacionList = materiaList.get(i).getEvaluaciones();
+                                                      spinnerAdapterEval = new SpinnerAdapterEval(Actividad_SelectReporte.this, android.R.layout.simple_spinner_item, evaluacionList);
+                                                      spinnerAdapterEval.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                                      spEvalu.setAdapter(spinnerAdapterEval);
+                                                      spEvalu.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                                          @Override
+                                                          public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
+                                                              if(pos!=-1){
+                                                                  evaluacion=evaluacionList.get(pos);
+                                                                  btnVerReporte.setVisibility(View.VISIBLE);
+                                                              }else{
+                                                                  btnVerReporte.setVisibility(View.GONE);
+                                                              }
+
+                                                          }
+
+                                                          @Override
+                                                          public void onNothingSelected(AdapterView<?> adapterView) {
+
+                                                          }
+                                                      });
+                                                      if (evaluacionList.isEmpty()) {
+                                                          Snackbar.make(layoutRoot, "No hay Evaluaciones.", Snackbar.LENGTH_LONG).show();
+                                                      }
+                                                  }
+                                                  }
+                                               @Override
+                                               public void onCancelled(DatabaseError databaseError) {
+                                             }
+                                              });
+
+                                        break;
+                                    case "Estudiante":
+                                        mDatabase=FirebaseDatabase.getInstance().getReference("noterubric").child("Estudiante");
+                                        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                 @Override
+                                                 public void onDataChange(DataSnapshot dataSnapshot) {
+                                                     int cont=Integer.parseInt(String.valueOf(dataSnapshot.getChildrenCount()));
+                                                     if(cont>0) {
+                                                         layoutEstud.setVisibility(View.VISIBLE);
+                                                         estudianteList = materiaList.get(i).getEstudiantes();
+                                                         spinnerAdapterEstud = new SpinnerAdapterEstud(Actividad_SelectReporte.this, android.R.layout.simple_spinner_item, estudianteList);
+                                                         spinnerAdapterEstud.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                                         spEstud.setAdapter(spinnerAdapterEstud);
+                                                         spEstud.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                                             @Override
+                                                             public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
+                                                                 if(pos!=-1){
+                                                                     estudiante=estudianteList.get(pos);
+                                                                     btnVerReporte.setVisibility(View.VISIBLE);
+                                                                 }else{
+                                                                     btnVerReporte.setVisibility(View.GONE);
+                                                                 }
+                                                             }
+
+                                                             @Override
+                                                             public void onNothingSelected(AdapterView<?> adapterView) {
+
+                                                             }
+                                                         });
+                                                         if (estudianteList.isEmpty()) {
+                                                             Snackbar.make(layoutRoot, "No hay Estudiantes.", Snackbar.LENGTH_LONG).show();
+                                                         }
+                                                     }
+                                                 }
+
+                                                 @Override
+                                                 public void onCancelled(DatabaseError databaseError) {
+
+                                                  }
+                                                  });
+
+
+                                        break;
+                                }
+                            }else{
+                                btnVerReporte.setVisibility(View.GONE);
+                                switch(title){
+                                    case "Evaluacion":
+                                        layoutEval.setVisibility(View.GONE);
+                                        break;
+                                    case "Estudiante":
+                                        layoutEstud.setVisibility(View.GONE);
+                                        break;
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+
+                        }
+                    });
+
+
+                    if (materiaList.isEmpty()){
+                        Snackbar.make(layoutRoot, "No hay Materias.", Snackbar.LENGTH_LONG).show();
+                    }
+
+                }
+                //
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        finish();
+                    }
+                });
+
+                                                     }
+
+                                                     @Override
+                                                     public void onCancelled(DatabaseError databaseError) {
+
+                                                     }
+                                                 });
 
 
     }
+
+
+
 
 
     @Override
